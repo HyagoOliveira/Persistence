@@ -1,0 +1,25 @@
+{
+    "name": "ActionCode.Persistence",
+    "rootNamespace": "ActionCode.Persistence",
+    "references": [],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.unity.nuget.newtonsoft-json",
+            "expression": "1.0.0",
+            "define": "PACKAGE_NEWTONSOFT"
+        },
+        {
+            "name": "com.unity.modules.jsonserialize",
+            "expression": "1.0.0",
+            "define": "MODULE_JSON_SERIALIZE"
+        }
+    ],
+    "noEngineReferences": false
+}
