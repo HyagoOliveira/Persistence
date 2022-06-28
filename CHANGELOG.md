@@ -8,8 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.1.0] - 2022-01-01
 ### Added
-- AESCryptographer
-- GZipCompressor
+- Binary Serializer
+- AES Cryptographer
+- GZip Compressor
 - Scriptable Settings Provider package dependency
 - CHANGELOG
 - Package file
