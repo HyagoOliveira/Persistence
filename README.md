@@ -5,7 +5,7 @@
 * Current version: **0.1.0**
 * License: **MIT**
 * Dependencies:
-	- [com.actioncode.[dependency] : 1.2.3](https://github.com/HyagoOliveira/[dependency]/tree/1.2.3/)
+	- [com.actioncode.scriptable-settings-provider : 1.0.0](https://github.com/HyagoOliveira/ScriptableSettingsProvider/tree/1.0.0)
 
 ## Summary
 
