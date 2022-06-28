@@ -1,22 +1,22 @@
 {
-  "name": "com.actioncode.[packagename]",
-  "displayName": "ActionCode-[PackageName]",
+  "name": "com.actioncode.persistence",
+  "displayName": "ActionCode-Persistence",
   "version": "0.1.0",
   "unity": "2019.3",
-  "description": "This package contains [...].",
+  "description": "This package can save Serialized data using encryption and compression.",
   "keywords": [
-    "",
-    ""
+    "Save",
+    "Data"
   ],
   "dependencies": {},
   "license": "MIT",
-  "homepage": "https://github.com/HyagoOliveira/[PACKAGE]#readme",
+  "homepage": "https://github.com/HyagoOliveira/Persistence#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/HyagoOliveira/[PACKAGE].git"
+    "url": "https://github.com/HyagoOliveira/Persistence.git"
   },
-  "documentationUrl": "https://github.com/HyagoOliveira/[PACKAGE]#readme",
-  "changelogUrl": "https://github.com/HyagoOliveira/[PACKAGE]/CHANGELOG.md",
+  "documentationUrl": "https://github.com/HyagoOliveira/Persistence#readme",
+  "changelogUrl": "https://github.com/HyagoOliveira/Persistence/CHANGELOG.md",
   "author": {
     "name": "Hyago Oliveira",
     "email": "hyagogow@gmail.com"
