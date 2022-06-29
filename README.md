@@ -9,7 +9,7 @@
 
 ## Summary
 
-This package can save Serialized data, first encrypting and/or compressing it. You can select if you want to only encrypt, compress and use both.
+This package can save Serialized data, first encrypting and/or compressing it. You can select if you want to only encrypt, compress or use both.
 Also, you can choose witch serialization method (Json, XML, Binary) to use.
 
 To do it, you need first to create a **Persistence Settings** asset and use it on your Serialized class.
@@ -19,15 +19,18 @@ To do it, you need first to create a **Persistence Settings** asset and use it o
 ### Creating a Persistence Settings
 
 Open the **Project Settings** Windows and select Persistence (below ActionCode group).
+
 Click on the **Create** button and save a new Persistence Settings asset.
 
 ![The Persistence Settings Menu](/Docs~/PersistenceSettingsMenu.png "The Persistence Settings Menu")
 
 Now you can select a Serializer, Compression, Cryptographer and other settings to use when save your data. Each property has a Tooltip description.
 
+If you're using a Cryptographer method, set a new Cryptographer Key using the **Get New Cryptographer Key** button.  
+
 ### Creating the Serialized Class
 
-Your class should use the `System.Serializable` attribute.
+Your Serialized class should always use the `System.Serializable` attribute.
 
 ```csharp
 using System;
@@ -42,9 +45,9 @@ public sealed class PlayerData
 }
 ```
 
->**Note**: if you're planning to use XML Serialization you should create a constructor to each serialized class.
+>Note: if you're planning to use **XML Serialization** you should create a constructor to each serialized class.
 
-Now you can Save/Load your **PlayerData**
+Now you can Save/Load your **PlayerData** like so:
 
 ```csharp
 using UnityEngine;
