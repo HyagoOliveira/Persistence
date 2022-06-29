@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
-## [0.1.0] - 2022-01-01
+## [1.0.0] - 2022-06-29
 ### Added
 - Add Persistence Settings Provider
 - Persistence Settings
@@ -24,5 +24,5 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - gitignore
 - Initial commit
 
-[Unreleased]: https://github.com/HyagoOliveira/Persistence/compare/0.1.0...main
-[0.1.0]: https://github.com/HyagoOliveira/Persistence/tree/0.1.0/
+[Unreleased]: https://github.com/HyagoOliveira/Persistence/compare/1.0.0...main
+[1.0.0]: https://github.com/HyagoOliveira/Persistence/tree/1.0.0/

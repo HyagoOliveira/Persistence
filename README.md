@@ -2,7 +2,7 @@
 
 * Save Serialized data using encryption and compression
 * Unity minimum version: **2019.3**
-* Current version: **0.1.0**
+* Current version: **1.0.0**
 * License: **MIT**
 * Dependencies:
 	- [com.actioncode.scriptable-settings-provider : 1.0.0](https://github.com/HyagoOliveira/ScriptableSettingsProvider/tree/1.0.0)
@@ -69,7 +69,7 @@ public sealed class PlayerDataManager : MonoBehaviour
         var wasSaved = settings.Save(data, slot: 0);
         //var wasSaved = settings.Save(data, name: "PlayerSave");
 
-        if (wasSaved) print("Save data was Saved!");
+        if (wasSaved) print("Player data was Saved!");
     }
 
     public void Load()
@@ -77,7 +77,7 @@ public sealed class PlayerDataManager : MonoBehaviour
         var wasLoaded = settings.TryLoad(out PlayerData data, slot: 0);
         //var wasLoaded = settings.TryLoad(out PlayerData data, name: "PlayerSave");
 
-        if (wasLoaded) print("Save data was loaded!");
+        if (wasLoaded) print("Player data was loaded!");
     }
 }
 ```
