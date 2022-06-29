@@ -9,11 +9,90 @@
 
 ## Summary
 
-[...]
+This package can save Serialized data, first encrypting and/or compressing it. You can select if you want to only encrypt, compress and use both.
+Also, you can choose witch serialization method (Json, XML, Binary) to use.
+
+To do it, you need first to create a **Persistence Settings** asset and use it on your Serialized class.
 
 ## How To Use
 
-### Using [...]
+### Creating a Persistence Settings
+
+Open the **Project Settings** Windows and select Persistence (below ActionCode group).
+Click on the **Create** button and save a new Persistence Settings asset.
+
+![The Persistence Settings Menu](/Docs~/PersistenceSettingsMenu.png "The Persistence Settings Menu")
+
+Now you can select a Serializer, Compression, Cryptographer and other settings to use when save your data. Each property has a Tooltip description.
+
+### Creating the Serialized Class
+
+Your class should use the `System.Serializable` attribute.
+
+```csharp
+using System;
+
+[Serializable]
+public sealed class PlayerData
+{
+    public int score;
+    public int lastLevel;
+    public string playerName;
+    public DateTime LastUpdateTime = DateTime.Now;
+}
+```
+
+>**Note**: if you're planning to use XML Serialization you should create a constructor to each serialized class.
+
+Now you can Save/Load your **PlayerData**
+
+```csharp
+using UnityEngine;
+using ActionCode.Persistence;
+
+public sealed class PlayerDataManager : MonoBehaviour
+{
+    public PersistenceSettings settings;
+
+    public void Save()
+    {
+        var data = new PlayerData
+        {
+            score = 100,
+            lastLevel = 1,
+            playerName = "MegaMan"
+        };
+
+        var wasSaved = settings.Save(data, slot: 0);
+        //var wasSaved = settings.Save(data, name: "PlayerSave");
+
+        if (wasSaved) print("Save data was Saved!");
+    }
+
+    public void Load()
+    {
+        var wasLoaded = settings.TryLoad(out PlayerData data, slot: 0);
+        //var wasLoaded = settings.TryLoad(out PlayerData data, name: "PlayerSave");
+
+        if (wasLoaded) print("Save data was loaded!");
+    }
+}
+```
+
+Don't forget to link the settings asset reference created by the Persistence Settings menu.
+
+### Checking the Persisted Data
+
+Go to the Persistence Menu into the Project Settings or select the Persistence Settings asset.
+
+If you want to debug your persisted data, make sure to enable the **Save Raw File**. 
+This way a legible file will be saved next the encrypted/compressed one.
+
+>**This file is only saved on Editor**. Your build will always save only the encrypted/compressed data. 
+
+To check the files, click on the **Open Save Folder** button.
+
+![The SaveRawFile](/Docs~/SaveRawFile-OpenSaveFolder.png "The Save Raw File option")
 
 ## Installation
 
