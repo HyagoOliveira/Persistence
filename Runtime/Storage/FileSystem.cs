@@ -74,7 +74,8 @@ namespace ActionCode.Persistence
         public static void OpenSaveFolder()
         {
 #if UNITY_EDITOR_WIN
-            Process.Start("explorer.exe", "/select, " + DataPath);
+            var path = DataPath.Replace(@"/", @"\") + @"\";
+            Process.Start("explorer.exe", "/select, " + path);
 #elif UNITY_EDITOR_OSX || UNITY_EDITOR_LINUX
             Process.Start("open", $"-R \"{DataPath}\"");
 #endif
