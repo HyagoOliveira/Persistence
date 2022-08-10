@@ -11,6 +11,7 @@ namespace ActionCode.Persistence
         [Tooltip("The Cryptographer type to use.")] public CryptographerType cryptographer;
         [Tooltip("The cryptographer key to use.")] public string cryptographerKey = "H2h2xZe83AX90788QNqJXRiWX88xWI2b";
         [Tooltip("The Save Slot name to use.")] public string slotName = "SaveSlot";
+        [Tooltip("The Slot name used with PlayerPrefs to save the last index.")] public string lastSlotKey = "LastSlot";
         [Tooltip("Whether to save the uncompressed/uncryptographed file for debugging. Only works on Editor.")]
         public bool saveRawFile = true;
 
@@ -25,7 +26,6 @@ namespace ActionCode.Persistence
 
         public IFileSystem FileSystem { get; private set; }
 
-        private const string LAST_SLOT_KEY = "LastSlot";
 
         public bool Save<T>(T data, string name)
         {
@@ -54,7 +54,7 @@ namespace ActionCode.Persistence
 
         public bool Save<T>(T data, int slot)
         {
-            PlayerPrefs.SetInt(LAST_SLOT_KEY, slot);
+            PlayerPrefs.SetInt(lastSlotKey, slot);
             return Save(data, GetSlotName(slot));
         }
 
@@ -87,7 +87,7 @@ namespace ActionCode.Persistence
         {
             const int invalidSlot = -1;
 
-            var lastSlot = PlayerPrefs.GetInt(LAST_SLOT_KEY, defaultValue: invalidSlot);
+            var lastSlot = PlayerPrefs.GetInt(lastSlotKey, defaultValue: invalidSlot);
             var hasLastSlot = lastSlot != invalidSlot;
 
             data = default;
