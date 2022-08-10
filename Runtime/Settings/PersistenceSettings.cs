@@ -6,12 +6,18 @@ namespace ActionCode.Persistence
     [CreateAssetMenu(fileName = "PersistenceSettings", menuName = "Persistence/Settings", order = 110)]
     public sealed class PersistenceSettings : ScriptableObject, IPersistenceSettings
     {
-        [Tooltip("The Serializer type to use.")] public SerializerType serializer;
-        [Tooltip("The Compressor type to use.")] public CompressorType compressor;
-        [Tooltip("The Cryptographer type to use.")] public CryptographerType cryptographer;
-        [Tooltip("The cryptographer key to use.")] public string cryptographerKey = "H2h2xZe83AX90788QNqJXRiWX88xWI2b";
-        [Tooltip("The Save Slot name to use.")] public string slotName = "SaveSlot";
-        [Tooltip("The Slot name used with PlayerPrefs to save the last index.")] public string lastSlotKey = "LastSlot";
+        [Tooltip("The Serializer type to use.")]
+        public SerializerType serializer;
+        [Tooltip("The Compressor type to use.")]
+        public CompressorType compressor;
+        [Tooltip("The Cryptographer type to use.")]
+        public CryptographerType cryptographer;
+        [Tooltip("The cryptographer key to use.")]
+        public string cryptographerKey = "H2h2xZe83AX90788QNqJXRiWX88xWI2b";
+        [Tooltip("The Save Slot name to use.")]
+        public string slotName = "SaveSlot";
+        [Tooltip("The Slot name used with PlayerPrefs to save the last index.")]
+        public string lastSlotKey = "LastSlot";
         [Tooltip("Whether to save the uncompressed/uncryptographed file for debugging. Only works on Editor.")]
         public bool saveRawFile = true;
 
@@ -25,7 +31,6 @@ namespace ActionCode.Persistence
         public event Action<Exception> OnLoadError;
 
         public IFileSystem FileSystem { get; private set; }
-
 
         public bool Save<T>(T data, string name)
         {
