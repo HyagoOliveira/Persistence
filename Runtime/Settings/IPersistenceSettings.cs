@@ -28,6 +28,16 @@ namespace ActionCode.Persistence
         event Action OnLoadEnd;
 
         /// <summary>
+        /// Action fired when the save process finishes with an error.
+        /// </summary>
+        event Action<Exception> OnSaveError;
+
+        /// <summary>
+        /// Action fired when the load process finishes with an error.
+        /// </summary>
+        event Action<Exception> OnLoadError;
+
+        /// <summary>
         /// The file system to use.
         /// </summary>
         IFileSystem FileSystem { get; }
