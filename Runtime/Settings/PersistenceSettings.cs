@@ -16,8 +16,12 @@ namespace ActionCode.Persistence
 
         public event Action OnSaveStart;
         public event Action OnSaveEnd;
+
         public event Action OnLoadStart;
         public event Action OnLoadEnd;
+
+        public event Action<Exception> OnSaveError;
+        public event Action<Exception> OnLoadError;
 
         public IFileSystem FileSystem { get; private set; }
 
@@ -39,6 +43,7 @@ namespace ActionCode.Persistence
             catch (Exception e)
             {
                 Debug.LogException(e);
+                OnSaveError?.Invoke(e);
                 return false;
             }
             finally
@@ -67,6 +72,7 @@ namespace ActionCode.Persistence
             {
                 Debug.LogException(e);
                 data = default;
+                OnLoadError?.Invoke(e);
                 return false;
             }
             finally
