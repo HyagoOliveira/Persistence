@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace ActionCode.Persistence
 {
     /// <summary>
@@ -11,7 +13,8 @@ namespace ActionCode.Persistence
         /// <typeparam name="T">The data generic type.</typeparam>
         /// <param name="data">The data instance.</param>
         /// <param name="name">The data file name without extension.</param>
-        void Save<T>(T data, string name);
+        /// <returns>A task operation of the saving process.</returns>
+        Task Save<T>(T data, string name);
 
         /// <summary>
         /// Saves the given data using the name without compression.

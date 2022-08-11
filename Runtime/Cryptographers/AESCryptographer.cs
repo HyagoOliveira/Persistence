@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
+using System.Threading.Tasks;
 using System.Security.Cryptography;
 
 namespace ActionCode.Persistence
@@ -25,17 +26,16 @@ namespace ActionCode.Persistence
             keyArray = Encoding.UTF8.GetBytes(key);
         }
 
-        public string Encrypt(string value)
+        public async Task<string> Encrypt(string value)
         {
             byte[] array;
             using var aes = CreateAlgorithm();
             var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
             using var memoryStream = new MemoryStream();
             using var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write);
-            using (var streamWriter = new StreamWriter(cryptoStream))
-            {
-                streamWriter.Write(value);
-            }
+
+            await SynchronyStreamAdapter.Write(cryptoStream, value);
+
             array = memoryStream.ToArray();
             return Convert.ToBase64String(array);
         }

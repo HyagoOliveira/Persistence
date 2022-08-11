@@ -1,3 +1,5 @@
+using System.Threading.Tasks;
+
 namespace ActionCode.Persistence
 {
     /// <summary>
@@ -9,8 +11,8 @@ namespace ActionCode.Persistence
         /// Encrypts the given value.
         /// </summary>
         /// <param name="value">A string to encrypt.</param>
-        /// <returns>A non human readable string.</returns>
-        string Encrypt(string value);
+        /// <returns>A task operation of the encrypt process containing a non human readable string.</returns>
+        Task<string> Encrypt(string value);
 
         /// <summary>
         /// Decrypts the given value.

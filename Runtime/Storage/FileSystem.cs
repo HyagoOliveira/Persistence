@@ -1,5 +1,6 @@
 using System.IO;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace ActionCode.Persistence
@@ -29,16 +30,15 @@ namespace ActionCode.Persistence
             cryptographer = CryptographerFactory.Create(cryptographerType, cryptographerKey);
         }
 
-        public void Save<T>(T data, string name)
+        public async Task Save<T>(T data, string name)
         {
             var path = GetPath(name);
             var content = serializer.Serialize(data);
 
-            if (cryptographer != null) content = cryptographer.Encrypt(content);
-            if (compressor != null) content = compressor.Compress(content);
+            if (cryptographer != null) content = await cryptographer.Encrypt(content);
+            if (compressor != null) content = await compressor.Compress(content);
 
-            using var writer = new StreamWriter(path);
-            writer.Write(content);
+            await SynchronyStreamAdapter.Write(path, content);
         }
 
         public void SaveUncompressed<T>(T data, string name)

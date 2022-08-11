@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 
 namespace ActionCode.Persistence
 {
@@ -48,8 +49,8 @@ namespace ActionCode.Persistence
         /// <typeparam name="T">The generic type of the saved data.</typeparam>
         /// <param name="data">The data to save.</param>
         /// <param name="name">The file name.</param>
-        /// <returns>An instance of the saved data.</returns>
-        bool Save<T>(T data, string name);
+        /// <returns>A task operation of the saving process.</returns>
+        Task Save<T>(T data, string name);
 
         /// <summary>
         /// Saves the given data using the slot index.
@@ -57,8 +58,8 @@ namespace ActionCode.Persistence
         /// <typeparam name="T">The generic type of the saved data.</typeparam>
         /// <param name="data">The data to save.</param>
         /// <param name="slot">The slot index to use.</param>
-        /// <returns>An instance of the saved data.</returns>
-        bool Save<T>(T data, int slot);
+        /// <returns>A task operation of the saving process.</returns>
+        Task Save<T>(T data, int slot);
 
         /// <summary>
         /// Tries to load the given data using the name.

@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace ActionCode.Persistence
@@ -32,24 +33,22 @@ namespace ActionCode.Persistence
 
         public IFileSystem FileSystem { get; private set; }
 
-        public bool Save<T>(T data, string name)
+        public async Task Save<T>(T data, string name)
         {
             CheckFileSystem();
             OnSaveStart?.Invoke();
 
             try
             {
-                FileSystem.Save(data, name);
+                await FileSystem.Save(data, name);
 #if UNITY_EDITOR
                 if (saveRawFile) FileSystem.SaveUncompressed(data, name);
 #endif
-                return true;
             }
             catch (Exception e)
             {
                 Debug.LogException(e);
                 OnSaveError?.Invoke(e);
-                return false;
             }
             finally
             {
@@ -57,10 +56,10 @@ namespace ActionCode.Persistence
             }
         }
 
-        public bool Save<T>(T data, int slot)
+        public async Task Save<T>(T data, int slot)
         {
             PlayerPrefs.SetInt(lastSlotKey, slot);
-            return Save(data, GetSlotName(slot));
+            await Save(data, GetSlotName(slot));
         }
 
         public bool TryLoad<T>(out T data, string name)

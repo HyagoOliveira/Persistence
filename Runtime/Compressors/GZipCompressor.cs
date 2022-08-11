@@ -1,7 +1,8 @@
 using System;
 using System.IO;
-using System.IO.Compression;
 using System.Text;
+using System.IO.Compression;
+using System.Threading.Tasks;
 
 namespace ActionCode.Persistence
 {
@@ -12,14 +13,15 @@ namespace ActionCode.Persistence
     /// </summary>
     public sealed class GZipCompressor : ICompressor
     {
-        public string Compress(string value)
+        public async Task<string> Compress(string value)
         {
             var bytes = Encoding.UTF8.GetBytes(value);
             using var stream = new MemoryStream();
             var compressor = new GZipStream(stream, CompressionMode.Compress);
-            compressor.Write(bytes, 0, bytes.Length);
-            compressor.Dispose();
 
+            await SynchronyStreamAdapter.Write(compressor, bytes);
+
+            compressor.Dispose();
             var output = stream.ToArray();
             return Convert.ToBase64String(output); ;
         }
