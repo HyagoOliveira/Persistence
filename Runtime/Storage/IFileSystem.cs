@@ -13,16 +13,9 @@ namespace ActionCode.Persistence
         /// <typeparam name="T">The data generic type.</typeparam>
         /// <param name="data">The data instance.</param>
         /// <param name="name">The data file name without extension.</param>
+        /// <param name="saveRawData">Whether to save the given data without any compression or cryptography.</param>
         /// <returns>A task operation of the saving process.</returns>
-        Task Save<T>(T data, string name);
-
-        /// <summary>
-        /// Saves the given data using the name without compression.
-        /// </summary>
-        /// <typeparam name="T">The data generic type.</typeparam>
-        /// <param name="data">The data instance.</param>
-        /// <param name="name">The data file name without extension.</param>
-        void SaveUncompressed<T>(T data, string name);
+        Task Save<T>(T data, string name, bool saveRawData);
 
         /// <summary>
         /// Tries to load the data using the given name.

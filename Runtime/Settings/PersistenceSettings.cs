@@ -40,10 +40,7 @@ namespace ActionCode.Persistence
 
             try
             {
-                await FileSystem.Save(data, name);
-#if UNITY_EDITOR
-                if (saveRawFile) FileSystem.SaveUncompressed(data, name);
-#endif
+                await FileSystem.Save(data, name, saveRawFile);
             }
             catch (Exception e)
             {
