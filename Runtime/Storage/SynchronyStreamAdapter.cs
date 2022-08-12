@@ -32,15 +32,15 @@ namespace ActionCode.Persistence
 
         public static async Task<string> Read(string path)
         {
-            await Task.Delay(2000);
             using var reader = new StreamReader(path);
-            var operation = reader.ReadToEndAsync();
-
-            await operation;
-
-            return operation.Result;
+            return await reader.ReadToEndAsync();
         }
 
+        public static async Task<string> Read(GZipStream decompressor)
+        {
+            using var reader = new StreamReader(decompressor);
+            return await reader.ReadToEndAsync();
+        }
 #else
         public static async Task Write(string path, string content)
         {

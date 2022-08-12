@@ -26,13 +26,12 @@ namespace ActionCode.Persistence
             return Convert.ToBase64String(output); ;
         }
 
-        public string Decompress(string value)
+        public async Task<string> Decompress(string value)
         {
             var bytes = Convert.FromBase64String(value);
-            using var stream = new MemoryStream(bytes);
-            using var decompressor = new GZipStream(stream, CompressionMode.Decompress);
-            using var reader = new StreamReader(decompressor);
-            return reader.ReadToEnd();
+            await using var stream = new MemoryStream(bytes);
+            await using var decompressor = new GZipStream(stream, CompressionMode.Decompress);
+            return await SynchronyStreamAdapter.Read(decompressor);
         }
     }
 }

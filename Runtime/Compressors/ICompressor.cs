@@ -8,9 +8,14 @@ namespace ActionCode.Persistence
         /// Compress the given value.
         /// </summary>
         /// <param name="value">A string to compress.</param>
-        /// <returns>A task operation of the compress process.</returns>
+        /// <returns>A task operation of the compressing process.</returns>
         Task<string> Compress(string value);
 
-        string Decompress(string value);
+        /// <summary>
+        /// Decompress the given value.
+        /// </summary>
+        /// <param name="value">A string to decompress.</param>
+        /// <returns>A task operation of the decompressing process.</returns>
+        Task<string> Decompress(string value);
     }
 }
