@@ -41,6 +41,8 @@ namespace ActionCode.Persistence
             using var reader = new StreamReader(decompressor);
             return await reader.ReadToEndAsync();
         }
+
+        public static async Task<string> Read(StreamReader reader) => await reader.ReadToEndAsync();
 #else
         public static async Task Write(string path, string content)
         {
@@ -66,6 +68,12 @@ namespace ActionCode.Persistence
         {
             await Task.Yield();
             using var reader = new StreamReader(path);
+            return reader.ReadToEnd();
+        }
+
+        public static async Task<string> Read(StreamReader reader)
+        {
+            await Task.Yield();
             return reader.ReadToEnd();
         }
 #endif

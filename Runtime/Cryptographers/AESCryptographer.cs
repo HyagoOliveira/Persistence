@@ -32,7 +32,7 @@ namespace ActionCode.Persistence
             using var aes = CreateAlgorithm();
             var encryptor = aes.CreateEncryptor(aes.Key, aes.IV);
             using var memoryStream = new MemoryStream();
-            using var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write);
+            await using var cryptoStream = new CryptoStream(memoryStream, encryptor, CryptoStreamMode.Write);
 
             await SynchronyStreamAdapter.Write(cryptoStream, value);
 
@@ -40,15 +40,15 @@ namespace ActionCode.Persistence
             return Convert.ToBase64String(array);
         }
 
-        public string Decrypt(string value)
+        public async Task<string> Decrypt(string value)
         {
             byte[] buffer = Convert.FromBase64String(value);
             using var aes = CreateAlgorithm();
             var decryptor = aes.CreateDecryptor(aes.Key, aes.IV);
-            using var memoryStream = new MemoryStream(buffer);
-            using var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
+            await using var memoryStream = new MemoryStream(buffer);
+            await using var cryptoStream = new CryptoStream(memoryStream, decryptor, CryptoStreamMode.Read);
             using var streamReader = new StreamReader(cryptoStream);
-            return streamReader.ReadToEnd();
+            return await SynchronyStreamAdapter.Read(streamReader);
         }
 
         private Aes CreateAlgorithm()

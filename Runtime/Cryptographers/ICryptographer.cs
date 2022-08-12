@@ -11,14 +11,14 @@ namespace ActionCode.Persistence
         /// Encrypts the given value.
         /// </summary>
         /// <param name="value">A string to encrypt.</param>
-        /// <returns>A task operation of the encrypt process containing a non human readable string.</returns>
+        /// <returns>A task operation of the encrypting process containing a non human readable string.</returns>
         Task<string> Encrypt(string value);
 
         /// <summary>
         /// Decrypts the given value.
         /// </summary>
         /// <param name="value">A string to decrypt.</param>
-        /// <returns>A human readable string.</returns>
-        string Decrypt(string value);
+        /// <returns>A task operation of the decrypting process containing a human readable string.</returns>
+        Task<string> Decrypt(string value);
     }
 }

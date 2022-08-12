@@ -56,7 +56,7 @@ namespace ActionCode.Persistence
             var content = await SynchronyStreamAdapter.Read(path);
 
             if (compressor != null) content = await compressor.Decompress(content);
-            if (cryptographer != null) content = cryptographer.Decrypt(content);
+            if (cryptographer != null) content = await cryptographer.Decrypt(content);
 
             return serializer.Deserialize<T>(content);
         }
