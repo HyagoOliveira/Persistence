@@ -11,9 +11,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 - Refactor PersistenceSettings.Save into a Task function
+- Replace PersistenceSettings.TryLoad function into a Task Load function
 
 ### Removed
 - FileSystem.SaveUncompressed function
+- PersistenceSettings.TryLoad function
 
 ## [1.0.0] - 2022-06-29
 ### Added

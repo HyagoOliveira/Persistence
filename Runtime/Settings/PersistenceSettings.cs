@@ -59,40 +59,38 @@ namespace ActionCode.Persistence
             await Save(data, GetSlotName(slot));
         }
 
-        public bool TryLoad<T>(out T data, string name)
+        public async Task<T> Load<T>(string name)
         {
             CheckFileSystem();
             OnLoadStart?.Invoke();
 
             try
             {
-                var hasData = FileSystem.TryLoad(name, out data);
-                return hasData;
+                return await FileSystem.Load<T>(name);
             }
             catch (Exception e)
             {
                 Debug.LogException(e);
-                data = default;
                 OnLoadError?.Invoke(e);
-                return false;
             }
             finally
             {
                 OnLoadEnd?.Invoke();
             }
+
+            return default;
         }
 
-        public bool TryLoad<T>(out T data, int slot) => TryLoad(out data, GetSlotName(slot));
+        public async Task<T> Load<T>(int slot) => await Load<T>(GetSlotName(slot));
 
-        public bool TryLoadLastSlot<T>(out T data)
+        public async Task<T> LoadLastSlot<T>()
         {
             const int invalidSlot = -1;
 
             var lastSlot = PlayerPrefs.GetInt(lastSlotKey, defaultValue: invalidSlot);
             var hasLastSlot = lastSlot != invalidSlot;
 
-            data = default;
-            return hasLastSlot && TryLoad(out data, lastSlot);
+            return hasLastSlot ? await Load<T>(lastSlot) : default;
         }
 
         private string GetSlotName(int index) => $"{slotName}-{index:D2}";

@@ -62,29 +62,26 @@ namespace ActionCode.Persistence
         Task Save<T>(T data, int slot);
 
         /// <summary>
-        /// Tries to load the given data using the name.
+        /// Loads using the given name.
         /// </summary>
         /// <typeparam name="T">The generic type of the loaded data.</typeparam>
-        /// <param name="data">An instance of the loaded data if available.</param>
         /// <param name="name">The file name to load.</param>
-        /// <returns>Whether the data was successfully loaded.</returns>
-        bool TryLoad<T>(out T data, string name);
+        /// <returns>A task operation of the loading process.</returns>
+        Task<T> Load<T>(string name);
 
         /// <summary>
-        /// Tries to load the given data using the slot index.
+        /// Loads using the given slot index.
         /// </summary>
         /// <typeparam name="T">The generic type of the loaded data.</typeparam>
-        /// <param name="data">An instance of the loaded data if available.</param>
         /// <param name="slot">The slot index to use.</param>
-        /// <returns>Whether the data was successfully loaded.</returns>
-        bool TryLoad<T>(out T data, int slot);
+        /// <returns>A task operation of the loading process.</returns>
+        Task<T> Load<T>(int slot);
 
         /// <summary>
-        /// Tries to load the given data using the last saved slot.
+        /// Loads using the last saved slot.
         /// </summary>
         /// <typeparam name="T">The generic type of the loaded data.</typeparam>
-        /// <param name="data">An instance of the loaded data if available.</param>
-        /// <returns>Whether the data was successfully loaded.</returns>
-        bool TryLoadLastSlot<T>(out T data);
+        /// <returns>A task operation of the loading process.</returns>
+        Task<T> LoadLastSlot<T>();
     }
 }
