@@ -47,23 +47,18 @@ namespace ActionCode.Persistence
             await SynchronyStreamAdapter.Write(path, content);
         }
 
-        public bool TryLoad<T>(string name, out T data)
+        public async Task<T> Load<T>(string name)
         {
-            data = default;
             var path = GetPath(name);
-            var hasData = File.Exists(path);
+            var hasNoFile = !File.Exists(path);
+            if (hasNoFile) return default;
 
-            if (!hasData) return false;
-
-            using var reader = new StreamReader(path);
-            var content = reader.ReadToEnd();
+            var content = await SynchronyStreamAdapter.Read(path);
 
             if (compressor != null) content = compressor.Decompress(content);
             if (cryptographer != null) content = cryptographer.Decrypt(content);
 
-            data = serializer.Deserialize<T>(content);
-
-            return hasData;
+            return serializer.Deserialize<T>(content);
         }
 
         public static void OpenSaveFolder()

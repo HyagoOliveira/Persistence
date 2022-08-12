@@ -29,6 +29,18 @@ namespace ActionCode.Persistence
 
         public static async Task Write(GZipStream compressor, byte[] bytes) =>
             await compressor.WriteAsync(bytes, 0, bytes.Length);
+
+        public static async Task<string> Read(string path)
+        {
+            await Task.Delay(2000);
+            using var reader = new StreamReader(path);
+            var operation = reader.ReadToEndAsync();
+
+            await operation;
+
+            return operation.Result;
+        }
+
 #else
         public static async Task Write(string path, string content)
         {
@@ -48,6 +60,13 @@ namespace ActionCode.Persistence
         {
             await Task.Yield();
             compressor.Write(bytes, 0, bytes.Length);
+        }
+
+        public static async Task<string> Read(string path)
+        {
+            await Task.Yield();
+            using var reader = new StreamReader(path);
+            return reader.ReadToEnd();
         }
 #endif
     }
