@@ -71,6 +71,13 @@ namespace ActionCode.Persistence
             return reader.ReadToEnd();
         }
 
+        public static async Task<string> Read(GZipStream decompressor)
+        {
+            await Task.Yield();
+            using var reader = new StreamReader(decompressor);
+            return reader.ReadToEnd();
+        }
+
         public static async Task<string> Read(StreamReader reader)
         {
             await Task.Yield();
