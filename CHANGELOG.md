@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Removed
 - FileSystem.SaveUncompressed function
 - PersistenceSettings.TryLoad function
+- Cryptographers classes
 
 ## [1.0.0] - 2022-06-29
 ### Added
