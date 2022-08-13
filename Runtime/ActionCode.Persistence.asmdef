@@ -1,7 +1,9 @@
 {
     "name": "ActionCode.Persistence",
     "rootNamespace": "ActionCode.Persistence",
-    "references": [],
+    "references": [
+        "GUID:5acf01c9870ed3243a1f521e40f97bc8"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
