@@ -2,6 +2,7 @@ using UnityEngine;
 using System.IO;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using ActionCode.AsyncIO;
 using ActionCode.Cryptography;
 
 namespace ActionCode.Persistence
@@ -13,8 +14,7 @@ namespace ActionCode.Persistence
     {
         public static string DataPath => Application.persistentDataPath;
 
-        private const string EXTENSION = "sv";
-
+        private readonly IStream stream;
         private readonly ISerializer serializer;
         private readonly ICompressor compressor;
         private readonly ICryptographer cryptographer;
@@ -24,11 +24,26 @@ namespace ActionCode.Persistence
             CompressorType compressorType,
             CryptographerType cryptographerType,
             string cryptographerKey
+        ) :
+            this(
+                StreamFactory.Create(),
+                SerializerFactory.Create(serializerType),
+                CompressorFactory.Create(compressorType),
+                CryptographerFactory.Create(cryptographerType, cryptographerKey)
+            )
+        { }
+
+        public FileSystem(
+            IStream stream,
+            ISerializer serializer,
+            ICompressor compressor,
+            ICryptographer cryptographer
         )
         {
-            serializer = SerializerFactory.Create(serializerType);
-            compressor = CompressorFactory.Create(compressorType);
-            cryptographer = CryptographerFactory.Create(cryptographerType, cryptographerKey);
+            this.stream = stream;
+            this.serializer = serializer;
+            this.compressor = compressor;
+            this.cryptographer = cryptographer;
         }
 
         public async Task Save<T>(T data, string name, bool saveRawData)
@@ -39,13 +54,13 @@ namespace ActionCode.Persistence
             if (saveRawData)
             {
                 var rawPath = Path.ChangeExtension(path, serializer.Extension);
-                await SynchronyStreamAdapter.Write(rawPath, content);
+                await stream.Write(rawPath, content);
             }
 
             if (cryptographer != null) content = await cryptographer.Encrypt(content);
             if (compressor != null) content = await compressor.Compress(content);
 
-            await SynchronyStreamAdapter.Write(path, content);
+            await stream.Write(path, content);
         }
 
         public async Task<T> Load<T>(string name)
@@ -54,7 +69,7 @@ namespace ActionCode.Persistence
             var hasNoFile = !File.Exists(path);
             if (hasNoFile) return default;
 
-            var content = await SynchronyStreamAdapter.Read(path);
+            var content = await stream.Read(path);
 
             if (compressor != null) content = await compressor.Decompress(content);
             if (cryptographer != null) content = await cryptographer.Decrypt(content);
@@ -74,8 +89,9 @@ namespace ActionCode.Persistence
 
         private static string GetPath(string name)
         {
+            const string extension = "sv";
             var path = Path.Combine(DataPath, name.Trim());
-            return Path.ChangeExtension(path, EXTENSION);
+            return Path.ChangeExtension(path, extension);
         }
     }
 }
