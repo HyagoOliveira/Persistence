@@ -12,9 +12,9 @@
 ## Summary
 
 This package can save Serialized data, first encrypting and/or compressing it. You can select if you want to only encrypt, compress or use both.
-Also, you can choose witch serialization method (Json, XML, Binary) to use.
+Also, you can choose witch serialization method to use (Json, XML or Binary).
 
-To do it, you need first to create a **Persistence Settings** asset and use it on your Serialized class.
+To start to save/load data, you need first to create a **Persistence Settings** asset and use it on your Serialized data class.
 
 ## How To Use
 
@@ -28,11 +28,13 @@ Click on the **Create** button and save a new Persistence Settings asset.
 
 Now you can select a Serializer, Compression, Cryptographer and other settings to use when save your data. Each property has a Tooltip description.
 
-If you're using a Cryptographer method, set a new Cryptographer Key using the **Get New Cryptographer Key** button.  
+If you're using a Cryptographer method, set a new Cryptographer Key using the **Get New Cryptographer Key** button. 
 
-### Creating the Serialized Class
+><b>Important</b>: you should create a new Cryptographer Key for every game you make in order to increase your data security.   
 
-Your Serialized class should always use the `System.Serializable` attribute.
+### Creating the Serialized Data Class
+
+Your Serialized data class should always use the `System.Serializable` attribute.
 
 ```csharp
 using System;
@@ -55,11 +57,12 @@ Now you can Save/Load your **PlayerData** like so:
 using UnityEngine;
 using ActionCode.Persistence;
 
-public sealed class PlayerDataManager : MonoBehaviour
+public sealed class PlayerDataTester : MonoBehaviour
 {
     public PersistenceSettings settings;
 
-    public void Save()
+    [ContextMenu("Save")]
+    public async void Save()
     {
         var data = new PlayerData
         {
@@ -67,19 +70,20 @@ public sealed class PlayerDataManager : MonoBehaviour
             lastLevel = 1,
             playerName = "MegaMan"
         };
+        var wasSaved = await settings.Save(data, slot: 0);
 
-        var wasSaved = settings.Save(data, slot: 0);
-        //var wasSaved = settings.Save(data, name: "PlayerSave");
-
-        if (wasSaved) print("Player data was Saved!");
+        print("Data was saved? " + wasSaved);
+        print(data);
     }
 
-    public void Load()
+    [ContextMenu("Load")]
+    public async void Load()
     {
-        var wasLoaded = settings.TryLoad(out PlayerData data, slot: 0);
-        //var wasLoaded = settings.TryLoad(out PlayerData data, name: "PlayerSave");
+        var data = await settings.Load<PlayerData>(slot: 0);
+        var hasData = data != null;
 
-        if (wasLoaded) print("Player data was loaded!");
+        print("Data was loaded? " + hasData);
+        print(data);
     }
 }
 ```
