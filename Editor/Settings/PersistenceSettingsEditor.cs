@@ -1,5 +1,6 @@
 using UnityEditor;
 using UnityEngine;
+using ActionCode.Cryptography;
 
 namespace ActionCode.Persistence.Editor
 {

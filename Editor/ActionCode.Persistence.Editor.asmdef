@@ -2,6 +2,7 @@
     "name": "ActionCode.Persistence.Editor",
     "rootNamespace": "ActionCode.Persistence.Editor",
     "references": [
+        "GUID:5acf01c9870ed3243a1f521e40f97bc8",
         "GUID:97b1f0f13e154439ba5fea6e086de8af",
         "GUID:f2da4fc876b4b498abf75ecbaaa1ca25"
     ],

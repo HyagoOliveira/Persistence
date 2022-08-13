@@ -10,10 +10,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - PersistenceSettings.OnLoadError
 - LoadingUIHandler component
 - SavingUIHandler component
+- Cryptography package 1.0.0
 
 ### Changed
 - Refactor PersistenceSettings.Save into a Task function
 - Replace PersistenceSettings.TryLoad function into a Task Load function
+- Replace local Cryptographers classes for Cryptography package
 
 ### Removed
 - FileSystem.SaveUncompressed function

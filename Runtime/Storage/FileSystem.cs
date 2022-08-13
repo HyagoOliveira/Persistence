@@ -2,6 +2,7 @@ using UnityEngine;
 using System.IO;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using ActionCode.Cryptography;
 
 namespace ActionCode.Persistence
 {
