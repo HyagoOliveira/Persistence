@@ -30,7 +30,7 @@ Now you can select a Serializer, Compression, Cryptographer and other settings t
 
 If you're using a Cryptographer method, set a new Cryptographer Key using the **Get New Cryptographer Key** button. 
 
-><b>Important</b>: you should create a new Cryptographer Key for every game you make in order to increase your data security.   
+><b>Important</b>: you should always create a new Cryptographer Key for every game you make in order to increase your data security.   
 
 ### Creating the Serialized Data Class
 
