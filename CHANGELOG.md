@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+- Asyn-IO package 1.0.0
 - PersistenceSettings.OnSaveError
 - PersistenceSettings.OnLoadError
 - LoadingUIHandler component

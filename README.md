@@ -5,6 +5,7 @@
 * Current version: **1.0.0**
 * License: **MIT**
 * Dependencies:
+    - [com.actioncode.async-io : 1.0.0](https://github.com/HyagoOliveira/Async-IO/tree/1.0.0)
     - [com.actioncode.cryptography : 1.0.0](https://github.com/HyagoOliveira/Cryptography/tree/1.0.0)
     - [com.actioncode.scriptable-settings-provider : 1.0.0](https://github.com/HyagoOliveira/ScriptableSettingsProvider/tree/1.0.0)
 
