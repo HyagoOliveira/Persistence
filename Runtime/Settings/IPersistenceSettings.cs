@@ -50,7 +50,7 @@ namespace ActionCode.Persistence
         /// <param name="data">The data to save.</param>
         /// <param name="name">The file name.</param>
         /// <returns>A task operation of the saving process.</returns>
-        Task Save<T>(T data, string name);
+        Task<bool> Save<T>(T data, string name);
 
         /// <summary>
         /// Saves the given data using the slot index.
@@ -59,7 +59,7 @@ namespace ActionCode.Persistence
         /// <param name="data">The data to save.</param>
         /// <param name="slot">The slot index to use.</param>
         /// <returns>A task operation of the saving process.</returns>
-        Task Save<T>(T data, int slot);
+        Task<bool> Save<T>(T data, int slot);
 
         /// <summary>
         /// Loads using the given name.

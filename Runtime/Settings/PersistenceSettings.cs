@@ -34,7 +34,7 @@ namespace ActionCode.Persistence
 
         public IFileSystem FileSystem { get; private set; }
 
-        public async Task Save<T>(T data, string name)
+        public async Task<bool> Save<T>(T data, string name)
         {
             CheckFileSystem();
             OnSaveStart?.Invoke();
@@ -42,11 +42,13 @@ namespace ActionCode.Persistence
             try
             {
                 await FileSystem.Save(data, name, saveRawFile);
+                return true;
             }
             catch (Exception e)
             {
                 Debug.LogException(e);
                 OnSaveError?.Invoke(e);
+                return false;
             }
             finally
             {
@@ -54,10 +56,10 @@ namespace ActionCode.Persistence
             }
         }
 
-        public async Task Save<T>(T data, int slot)
+        public async Task<bool> Save<T>(T data, int slot)
         {
             PlayerPrefs.SetInt(lastSlotKey, slot);
-            await Save(data, GetSlotName(slot));
+            return await Save(data, GetSlotName(slot));
         }
 
         public async Task<T> Load<T>(string name)
