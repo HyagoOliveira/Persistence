@@ -39,6 +39,9 @@ namespace ActionCode.Persistence
             CheckFileSystem();
             OnSaveStart?.Invoke();
 
+#if !UNITY_EDITOR
+                saveRawFile = false;
+#endif
             try
             {
                 await FileSystem.Save(data, name, saveRawFile);
