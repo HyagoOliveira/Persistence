@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - PersistenceSettings.OnSaveError
 - PersistenceSettings.OnLoadError
 - LoadingUIHandler component
+- SavingUIHandler component
 
 ### Changed
 - Refactor PersistenceSettings.Save into a Task function
