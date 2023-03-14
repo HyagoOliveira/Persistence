@@ -30,7 +30,7 @@ Now you can select a Serializer, Compression, Cryptographer and other settings t
 
 If you're using a Cryptographer method, set a new Cryptographer Key using the **Get New Cryptographer Key** button. 
 
-><b>Important</b>: you should always create a new Cryptographer Key for every game you make in order to increase your data security.   
+>**Important**: you should always create a new Cryptographer Key for every game you make in order to increase your data security.   
 
 ### Creating the Serialized Data Class
 
@@ -49,7 +49,11 @@ public sealed class PlayerData
 }
 ```
 
->Note: if you're planning to use **XML Serialization** you should create a constructor to each serialized class.
+>**Note 1**: if you're planning to use **XML Serialization** you should create a constructor to each serialized class.
+
+>**Note 2**: *Json Utility* serializer doesn't save *properties*, just *public fields* and *fields* with the `[SerializeField]` attribute. 
+Also, some types are not supported as well.
+To solve this, please use *Json Newtonsoft* serializer and install the **Newtonsoft Json** package.
 
 Now you can Save/Load your **PlayerData** like so:
 
