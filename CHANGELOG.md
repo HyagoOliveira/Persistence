@@ -51,6 +51,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - gitignore
 - Initial commit
 
-[Unreleased]: https://github.com/HyagoOliveira/Persistence/compare/2.0.0...main
+[Unreleased]: https://github.com/HyagoOliveira/Persistence/compare/2.1.0...main
+[2.1.0]: https://github.com/HyagoOliveira/Persistence/tree/2.1.0/
 [2.0.0]: https://github.com/HyagoOliveira/Persistence/tree/2.0.0/
 [1.0.0]: https://github.com/HyagoOliveira/Persistence/tree/1.0.0/
