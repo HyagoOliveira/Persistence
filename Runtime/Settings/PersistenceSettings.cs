@@ -5,7 +5,6 @@ using ActionCode.Cryptography;
 
 namespace ActionCode.Persistence
 {
-    [CreateAssetMenu(fileName = "PersistenceSettings", menuName = "Persistence/Settings", order = 110)]
     public sealed class PersistenceSettings : ScriptableObject, IPersistenceSettings
     {
         [Tooltip("The Serializer type to use.")]

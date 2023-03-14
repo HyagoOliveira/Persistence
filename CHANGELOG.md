@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+- Remove CreateAssetMenu attribute from PersistenceSettings
+
 ## [2.0.0] - 2022-08-13
 ### Added
 - Asyn-IO package 1.0.0
