@@ -6,6 +6,7 @@ namespace ActionCode.Persistence
     {
         public string Extension => "json";
 
+        public string SerializePretty<T>(T data) => JsonUtility.ToJson(data, prettyPrint: true);
         public string Serialize<T>(T data) => JsonUtility.ToJson(data);
         public T Deserialize<T>(string value) => JsonUtility.FromJson<T>(value);
 

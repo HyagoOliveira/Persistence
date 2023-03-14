@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Remove CreateAssetMenu attribute from PersistenceSettings
 - Using BinaryFormatter only if BINARY_AVAILABLE
+- Pretty serialize raw file data
 
 ## [2.0.0] - 2022-08-13
 ### Added

@@ -10,6 +10,8 @@ namespace ActionCode.Persistence
     {
         public string Extension => "xml";
 
+        public string SerializePretty<T>(T data) => Serialize(data);
+
         public string Serialize<T>(T data)
         {
             var serializer = new SystemSerialization.XmlSerializer(typeof(T));

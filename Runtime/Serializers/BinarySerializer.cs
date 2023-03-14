@@ -14,6 +14,8 @@ namespace ActionCode.Persistence
     {
         public string Extension => "bin";
 
+        public string SerializePretty<T>(T data) => Serialize(data);
+
 #if BINARY_AVAILABLE
         public string Serialize<T>(T data)
         {

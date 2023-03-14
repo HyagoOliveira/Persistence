@@ -49,13 +49,16 @@ namespace ActionCode.Persistence
         public async Task Save<T>(T data, string name, bool saveRawData)
         {
             var path = GetPath(name);
-            var content = serializer.Serialize(data);
 
             if (saveRawData)
             {
+                var prettyContent = serializer.SerializePretty(data);
                 var rawPath = Path.ChangeExtension(path, serializer.Extension);
-                await stream.Write(rawPath, content);
+
+                await stream.Write(rawPath, prettyContent);
             }
+
+            var content = serializer.Serialize(data);
 
             if (cryptographer != null) content = await cryptographer.Encrypt(content);
             if (compressor != null) content = await compressor.Compress(content);
