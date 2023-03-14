@@ -8,7 +8,7 @@ namespace ActionCode.Persistence
             {
                 SerializerType.Binary => BinarySerializer.IsAvailable() ? new BinarySerializer() : null,
                 SerializerType.JsonUtility => JsonUtilitySerializer.IsAvailable() ? new JsonUtilitySerializer() : null,
-                SerializerType.JsonNewtonsoft => throw new System.NotImplementedException(),
+                SerializerType.JsonNewtonsoft => NewtonsoftSerializer.IsAvailable() ? new NewtonsoftSerializer() : null,
                 SerializerType.Xml => new XmlSerializer(),
                 _ => null,
             };

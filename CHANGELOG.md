@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- Newtonsoft Json Serializer
+
 ### Changed
 - Remove CreateAssetMenu attribute from PersistenceSettings
 - Using BinaryFormatter only if BINARY_AVAILABLE
