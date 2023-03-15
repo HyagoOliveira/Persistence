@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 namespace ActionCode.Persistence
 {
@@ -34,24 +35,34 @@ namespace ActionCode.Persistence
 
         private void Show()
         {
-            beginShowTime = Time.timeSinceLevelLoad;
+            beginShowTime = GetTime();
             Enable();
         }
 
         private void Hide()
         {
-            var elapsedTime = Time.timeSinceLevelLoad - beginShowTime;
+            var elapsedTime = GetTime() - beginShowTime;
             var hasMinimumDisplayTime = elapsedTime > minimumDisplayTime;
 
             if (hasMinimumDisplayTime) Disable();
             else
             {
                 var remainingTime = minimumDisplayTime - elapsedTime;
-                Invoke(nameof(Disable), remainingTime);
+
+                StopAllCoroutines();
+                StartCoroutine(DisableRoutine(remainingTime));
             }
         }
 
         private void Enable() => uiGameObject.SetActive(true);
         private void Disable() => uiGameObject.SetActive(false);
+
+        private IEnumerator DisableRoutine(float time)
+        {
+            yield return new WaitForSecondsRealtime(time);
+            Disable();
+        }
+
+        private static float GetTime() => Time.realtimeSinceStartup;
     }
 }
