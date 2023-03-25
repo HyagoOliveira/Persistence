@@ -23,7 +23,7 @@ namespace ActionCode.Persistence
 #if PACKAGE_NEWTONSOFT
             return true;
 #else
-            Debug.LogError("Newtonsoft Json package isn't installed. Install it using Package Manager.");
+            UnityEngine.Debug.LogError("Newtonsoft Json package isn't installed. Install it using Package Manager.");
             return false;
 #endif
         }
