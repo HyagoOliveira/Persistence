@@ -20,9 +20,17 @@ namespace ActionCode.Persistence
         /// <summary>
         /// Loads the generic data using the given name. 
         /// </summary>
-        /// <typeparam name="T">The data generic type.</typeparam>
+        /// <typeparam name="T">The generic data type.</typeparam>
         /// <param name="name">The data file name without extension.</param>
-        /// <returns>A task operation of the saving process.</returns>
+        /// <returns>A task operation of the loading process.</returns>
         Task<T> Load<T>(string name);
+
+        /// <summary>
+        /// Loads the generic raw data using the given name. 
+        /// </summary>
+        /// <typeparam name="T">The generic raw data type.</typeparam>
+        /// <param name="name">The raw data file name without extension.</param>
+        /// <returns>A task operation of the loading process.</returns>
+        Task<T> LoadRaw<T>(string name);
     }
 }

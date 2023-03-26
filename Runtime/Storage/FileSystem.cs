@@ -69,6 +69,17 @@ namespace ActionCode.Persistence
         public async Task<T> Load<T>(string name)
         {
             var path = GetPath(name);
+            return await LoadUsingPath<T>(path);
+        }
+
+        public async Task<T> LoadRaw<T>(string name)
+        {
+            var path = GetPath(name, serializer.Extension);
+            return await LoadUsingPath<T>(path);
+        }
+
+        private async Task<T> LoadUsingPath<T>(string path)
+        {
             var hasNoFile = !File.Exists(path);
             if (hasNoFile) return default;
 
@@ -90,9 +101,8 @@ namespace ActionCode.Persistence
 #endif
         }
 
-        private static string GetPath(string name)
+        private static string GetPath(string name, string extension = "sv")
         {
-            const string extension = "sv";
             var path = Path.Combine(DataPath, name.Trim());
             return Path.ChangeExtension(path, extension);
         }
