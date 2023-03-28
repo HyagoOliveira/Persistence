@@ -99,6 +99,34 @@ namespace ActionCode.Persistence
             return hasLastSlot ? await Load<T>(lastSlot) : default;
         }
 
+        /// <summary>
+        /// Fast loads the raw file using the given name and Serializer, without using compressor or cryptography.
+        /// </summary>
+        /// <typeparam name="T"><inheritdoc cref="Load{T}(string)"/></typeparam>
+        /// <param name="name"><inheritdoc cref="Load{T}(string)"/></param>
+        /// <param name="serializer">The Serializer type to use.</param>
+        /// <returns><inheritdoc cref="Load{T}(string)"/></returns>
+        public static async Task<T> LoadRawFile<T>(string name, SerializerType serializer)
+        {
+            var fileSystem = new FileSystem(
+                serializer,
+                CompressorType.None,
+                CryptographerType.None,
+                string.Empty
+            );
+
+            try
+            {
+                return await fileSystem.LoadRaw<T>(name);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+
+            return default;
+        }
+
         private string GetSlotName(int index) => $"{slotName}-{index:D2}";
 
         private void CheckFileSystem()

@@ -6,7 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- Load Raw file function
+- Fast load raw file
 
 ### Fixed
 - Add missing CreateAssetMenu attribute in PersistenceSettings
