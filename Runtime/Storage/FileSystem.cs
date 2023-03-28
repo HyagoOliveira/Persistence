@@ -1,3 +1,7 @@
+#if UNITY_WEBGL && !UNITY_EDITOR
+#define RUNTIME_WEBGL
+#endif
+
 using UnityEngine;
 using System.IO;
 using System.Diagnostics;
@@ -64,6 +68,11 @@ namespace ActionCode.Persistence
             if (compressor != null) content = await compressor.Compress(content);
 
             await stream.Write(path, content);
+
+#if RUNTIME_WEBGL
+            // Flushes the changes into the Browser IndexedDB.
+            SyncDB();
+#endif
         }
 
         public async Task<T> Load<T>(string name)
@@ -106,5 +115,11 @@ namespace ActionCode.Persistence
             var path = Path.Combine(DataPath, name.Trim());
             return Path.ChangeExtension(path, extension);
         }
+
+#if RUNTIME_WEBGL
+        // The function is present on /Plugins/WebGL/IndexedDB_Flusher.jslib file
+        [System.Runtime.InteropServices.DllImport("__Internal")]
+        private static extern void SyncDB(); 
+#endif
     }
 }

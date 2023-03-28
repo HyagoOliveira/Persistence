@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Add missing CreateAssetMenu attribute in PersistenceSettings
 - Add missing namespace for NewtonsoftSerializer
+- Flushes the data changes into the Browser IndexedDB when saved
 
 ## [2.1.1] - 2023-03-15
 ### Fixed
