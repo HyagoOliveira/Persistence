@@ -3,6 +3,7 @@
 #endif
 
 using UnityEngine;
+using System;
 using System.IO;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -52,6 +53,7 @@ namespace ActionCode.Persistence
 
         public async Task Save<T>(T data, string name, bool saveRawData)
         {
+            CheckWhetherSerializable<T>("save");
             var path = GetPath(name);
 
             if (saveRawData)
@@ -89,6 +91,7 @@ namespace ActionCode.Persistence
 
         private async Task<T> LoadUsingPath<T>(string path)
         {
+            CheckWhetherSerializable<T>("deserialize");
             var hasNoFile = !File.Exists(path);
             if (hasNoFile) return default;
 
@@ -114,6 +117,15 @@ namespace ActionCode.Persistence
         {
             var path = Path.Combine(DataPath, name.Trim());
             return Path.ChangeExtension(path, extension);
+        }
+
+        private static void CheckWhetherSerializable<T>(string action)
+        {
+            if (!typeof(T).IsSerializable)
+                throw new ArgumentException(
+                    $"Tried to {action} non-serializable type {typeof(T).Name}. " +
+                    $"Add the [Serializable] attribute into your class."
+                );
         }
 
 #if RUNTIME_WEBGL

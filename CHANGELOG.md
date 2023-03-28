@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 - Fast load raw file
+- Check if generic type is serializable before load/save
 
 ### Fixed
 - Add missing CreateAssetMenu attribute in PersistenceSettings
