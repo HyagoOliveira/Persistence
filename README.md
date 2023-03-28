@@ -55,6 +55,8 @@ public sealed class PlayerData
 Also, some types are not supported as well.
 To solve this, please use *Json Newtonsoft* serializer and install the **Newtonsoft Json** package.
 
+>**Note 3**: If you're using *Json Newtonsoft* serializer, don't forget to use the `[JsonConstructor]` attribute into your default class constructor.
+
 Now you can Save/Load your **PlayerData** like so:
 
 ```csharp
