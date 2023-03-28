@@ -26,11 +26,11 @@ Click on the **Create** button and save a new Persistence Settings asset.
 
 ![The Persistence Settings Menu](/Docs~/PersistenceSettingsMenu.png "The Persistence Settings Menu")
 
-Now you can select a Serializer, Compression, Cryptographer and other settings to use when save your data. Each property has a Tooltip description.
+Now you can select a Serializer, Compression, Cryptographer and other settings to use when saving your data. Each property has a Tooltip description.
 
 If you're using a Cryptographer method, set a new Cryptographer Key using the **Get New Cryptographer Key** button. 
 
->**Important**: you should always create a new Cryptographer Key for every game you make in order to increase your data security.   
+>**Important**: you should always use a different Cryptographer Key for every game you work in order to increase your data security.   
 
 ### Creating the Serialized Data Class
 
@@ -55,7 +55,7 @@ public sealed class PlayerData
 Also, some types are not supported as well.
 To solve this, please use *Json Newtonsoft* serializer and install the **Newtonsoft Json** package.
 
->**Note 3**: If you're using *Json Newtonsoft* serializer, don't forget to use the `[JsonConstructor]` attribute into your default class constructor.
+>**Note 3**: If you're using *Json Newtonsoft* serializer, don't forget to use the `[JsonConstructor]` attribute into your default classes constructors.
 
 Now you can Save/Load your **PlayerData** like so:
 
@@ -108,6 +108,9 @@ This way a legible file will be saved next the encrypted/compressed one.
 To check the files, click on the **Open Save Folder** button.
 
 ![The SaveRawFile](/Docs~/SaveRawFile-OpenSaveFolder.png "The Save Raw File option")
+
+When in the develop process, you can use the static function `PersistenceSettings.LoadRawFile<T>()` to quickly load your save raw file. 
+This is faster since it will not uncompress or decrypt the raw file.
 
 ## Installation
 
