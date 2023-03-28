@@ -2,7 +2,7 @@
 
 * Save Serialized data using encryption and compression
 * Unity minimum version: **2019.3**
-* Current version: **2.1.1**
+* Current version: **2.2.0**
 * License: **MIT**
 * Dependencies:
     - [com.actioncode.async-io : 1.0.0](https://github.com/HyagoOliveira/Async-IO/tree/1.0.0)
@@ -128,7 +128,7 @@ You will need a **Git client** installed on your computer with the Path variable
 - You can also manually modify you `Packages/manifest.json` file and add this line inside `dependencies` attribute: 
 
 ```json
-"com.actioncode.persistence":"https://github.com/HyagoOliveira/Persistence.git"
+"com.actioncode.persistence": "https://github.com/HyagoOliveira/Persistence.git"
 ```
 
 ---
