@@ -53,9 +53,9 @@ public sealed class PlayerData
 
 >**Note 2**: *Json Utility* serializer doesn't save *properties*, just *public fields* and *fields* with the `[SerializeField]` attribute. 
 Also, some types are not supported as well.
-To solve this, please use *Json Newtonsoft* serializer and install the **Newtonsoft Json** package.
+To solve this, please use *Json Newtonsoft* serializer and install the [Newtonsoft Json package](https://github.com/applejag/Newtonsoft.Json-for-Unity/wiki/Install-official-via-UPM).
 
->**Note 3**: If you're using *Json Newtonsoft* serializer, don't forget to use the `[JsonConstructor]` attribute into your default classes constructors.
+>**Note 3**: If you're using *Json Newtonsoft* serializer, you may use the [Newtonsoft.Json-for-Unity.Converters package](https://github.com/applejag/Newtonsoft.Json-for-Unity/wiki/Install-Converters-via-UPM) if you need to serialize types such as Vector2, Vector3, Matrix4x4, Quaternions, Color and any other Unity type.
 
 Now you can Save/Load your **PlayerData** like so:
 
@@ -78,7 +78,7 @@ public sealed class PlayerDataTester : MonoBehaviour
         };
         var wasSaved = await settings.Save(data, slot: 0);
 
-        print("Data was saved? " + wasSaved);
+        print("Was data saved? " + wasSaved);
         print(data);
     }
 
@@ -88,7 +88,7 @@ public sealed class PlayerDataTester : MonoBehaviour
         var data = await settings.Load<PlayerData>(slot: 0);
         var hasData = data != null;
 
-        print("Data was loaded? " + hasData);
+        print("Was data loaded? " + hasData);
         print(data);
     }
 }
