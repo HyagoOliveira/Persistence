@@ -45,7 +45,9 @@ public sealed class PlayerData
     public int score;
     public int lastLevel;
     public string playerName;
-    public DateTime LastUpdateTime = DateTime.Now;
+
+    public DateTime Creation { get; private set; } = DateTime.Now;
+    public DateTime LastUpdate { get; private set; } = DateTime.Now;
 }
 ```
 
@@ -96,16 +98,18 @@ public sealed class PlayerDataTester : MonoBehaviour
 }
 ```
 
-Don't forget to link the settings asset reference created by the Persistence Settings menu.
+>Don't forget to link the settings asset reference created by the Persistence Settings menu.
 
 ### Checking the Persisted Data
 
 Go to the Persistence Menu into the Project Settings or select the Persistence Settings asset.
 
 If you want to debug your persisted data, make sure to enable the **Save Raw File**. 
-This way a legible file will be saved next the encrypted/compressed one.
+This way a legible file with the proper serializer extension will be saved next the encrypted/compressed one.
 
->**This file is only saved on Editor**. Your build will always save to and load from the encrypted/compressed data.
+![The SaveSlotFiles](/Docs~/SaveSlotFiles.png "The Save Slot Files")
+
+>**This raw file is only saved on Editor**. Your build will always save to and load from the encrypted/compressed data.
 
 To check the files, click on the **Open Save Folder** button.
 
