@@ -57,11 +57,6 @@ namespace ActionCode.Persistence
         public event Action<Exception> OnLoadError;
 
         /// <summary>
-        /// The current file system.
-        /// </summary>
-        public IFileSystem FileSystem { get; private set; }
-
-        /// <summary>
         /// Saves the given data using the name.
         /// </summary>
         /// <typeparam name="T">The generic type of the saved data.</typeparam>
@@ -70,7 +65,6 @@ namespace ActionCode.Persistence
         /// <returns>A task operation of the saving process.</returns>
         public async Task<bool> Save<T>(T data, string name)
         {
-            CheckFileSystem();
             OnSaveStart?.Invoke();
 
 #if !UNITY_EDITOR
@@ -78,7 +72,7 @@ namespace ActionCode.Persistence
 #endif
             try
             {
-                await FileSystem.Save(data, name, saveRawFile);
+                await GetFileSystem().Save(data, name, saveRawFile);
                 return true;
             }
             catch (Exception e)
@@ -111,15 +105,21 @@ namespace ActionCode.Persistence
         /// </summary>
         /// <typeparam name="T">The generic type of the loaded data.</typeparam>
         /// <param name="name">The file name to load.</param>
+        /// <param name="useRawFile">Whether to use the raw file to fast load the data without using compressor or cryptography.</param>
         /// <returns>A task operation of the loading process.</returns>
-        public async Task<T> Load<T>(string name)
+        public async Task<T> Load<T>(string name, bool useRawFile = false)
         {
-            CheckFileSystem();
+#if !UNITY_EDITOR
+            useRawFile = false;
+#endif
+
             OnLoadStart?.Invoke();
 
             try
             {
-                return await FileSystem.Load<T>(name);
+                return useRawFile ?
+                    await GetRawFileSystem().LoadRaw<T>(name) :
+                    await GetFileSystem().Load<T>(name);
             }
             catch (Exception e)
             {
@@ -137,64 +137,44 @@ namespace ActionCode.Persistence
         /// <summary>
         /// Loads using the given slot index.
         /// </summary>
-        /// <typeparam name="T">The generic type of the loaded data.</typeparam>
+        /// <typeparam name="T"><inheritdoc cref="Load{T}(string, bool)"/></typeparam>
         /// <param name="slotIndex">The slot index to use.</param>
-        /// <returns>A task operation of the loading process.</returns>
-        public async Task<T> Load<T>(int slotIndex) => await Load<T>(GetSlotName(slotIndex));
+        /// <param name="useRawFile">Whether to use the raw file to fast load the data without using compressor or cryptography.</param>
+        /// <returns><inheritdoc cref="Load{T}(string, bool)"/></returns>
+        public async Task<T> Load<T>(int slotIndex, bool useRawFile = false) =>
+            await Load<T>(GetSlotName(slotIndex), useRawFile);
 
         /// <summary>
         /// Loads from the last saved slot.
         /// </summary>
         /// <typeparam name="T">The generic type of the loaded data.</typeparam>
+        /// <param name="useRawFile">Whether to use the raw file to fast load the data without using compressor or cryptography.</param>
         /// <returns>A task operation of the loading process.</returns>
-        public async Task<T> LoadLastSlot<T>()
+        public async Task<T> LoadLastSlot<T>(bool useRawFile = false)
         {
             const int invalidSlot = -1;
 
             var lastSlot = PlayerPrefs.GetInt(lastSlotKey, defaultValue: invalidSlot);
             var hasLastSlot = lastSlot != invalidSlot;
 
-            return hasLastSlot ? await Load<T>(lastSlot) : default;
+            return hasLastSlot ? await Load<T>(lastSlot, useRawFile) : default;
         }
 
-        /// <summary>
-        /// Fast loads the raw file using the given name and Serializer, without using compressor or cryptography.
-        /// </summary>
-        /// <typeparam name="T"><inheritdoc cref="Load{T}(string)"/></typeparam>
-        /// <param name="name"><inheritdoc cref="Load{T}(string)"/></param>
-        /// <param name="serializer">The Serializer type to use.</param>
-        /// <returns><inheritdoc cref="Load{T}(string)"/></returns>
-        public static async Task<T> LoadRawFile<T>(string name, SerializerType serializer)
-        {
-            var fileSystem = new FileSystem(
-                serializer,
-                CompressorType.None,
-                CryptographerType.None,
-                string.Empty
-            );
-
-            try
-            {
-                return await fileSystem.LoadRaw<T>(name);
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-            }
-
-            return default;
-        }
 
         private string GetSlotName(int index) => $"{slotName}-{index:D2}";
 
-        private void CheckFileSystem()
-        {
-            FileSystem ??= new FileSystem(
-                serializer,
-                compressor,
-                cryptographer,
-                cryptographerKey
-            );
-        }
+        private IFileSystem GetFileSystem() => new FileSystem(
+            serializer,
+            compressor,
+            cryptographer,
+            cryptographerKey
+        );
+
+        private IFileSystem GetRawFileSystem() => new FileSystem(
+            serializer,
+            CompressorType.None,
+            CryptographerType.None,
+            cryptographerKey: string.Empty
+        );
     }
 }

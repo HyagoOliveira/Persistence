@@ -107,14 +107,17 @@ This way a legible file will be saved next the encrypted/compressed one.
 
 >**This file is only saved on Editor**. Your build will always save to and load from the encrypted/compressed data.
 
-> Changes on this legible raw file will not be loaded.
-
 To check the files, click on the **Open Save Folder** button.
 
 ![The SaveRawFile](/Docs~/SaveRawFile-OpenSaveFolder.png "The Save Raw File option")
 
-When in the develop process, you can use the static function `PersistenceSettings.LoadRawFile<T>()` to quickly load your save raw file. 
-This is faster since it will not uncompress or decrypt the raw file.
+When in the develop process, you can set the optional boolean parameter *useRawFile* from any `PersistenceSettings.Load<T>()` function to quickly load your data from the raw file.
+
+```csharp
+var data = await settings.Load<PlayerData>(slot: 0, useRawFile: true);
+```
+
+This function is faster since it will not uncompress and decrypt the raw file and you can edit this file manually.
 
 ## Installation
 
