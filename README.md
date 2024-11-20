@@ -57,7 +57,9 @@ To solve this, please use *Json Newtonsoft* serializer and install the [Newtonso
 
 >**Note 3**: If you're using *Json Newtonsoft* serializer, you may use the [Newtonsoft.Json-for-Unity.Converters package](https://github.com/applejag/Newtonsoft.Json-for-Unity/wiki/Install-Converters-via-UPM) if you need to serialize types such as Vector2, Vector3, Matrix4x4, Quaternions, Color and any other Unity type.
 
-Now you can Save/Load your **PlayerData** like so:
+### Save/Load the Serialized Data Class
+
+You can Save/Load your **PlayerData** like so:
 
 ```csharp
 using UnityEngine;
@@ -103,7 +105,9 @@ Go to the Persistence Menu into the Project Settings or select the Persistence S
 If you want to debug your persisted data, make sure to enable the **Save Raw File**. 
 This way a legible file will be saved next the encrypted/compressed one.
 
->**This file is only saved on Editor**. Your build will always save only the encrypted/compressed data. 
+>**This file is only saved on Editor**. Your build will always save to and load from the encrypted/compressed data.
+
+> Changes on this legible raw file will not be loaded.
 
 To check the files, click on the **Open Save Folder** button.
 
