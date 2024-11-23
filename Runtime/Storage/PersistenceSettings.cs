@@ -117,8 +117,7 @@ namespace ActionCode.Persistence
 
             try
             {
-                var fileSystem = useRawFile ? GetRawFileSystem() : GetFileSystem();
-                return await fileSystem.Load<T>(name, useRawFile);
+                return await GetFileSystem().Load<T>(name, !useRawFile);
             }
             catch (Exception e)
             {
@@ -166,13 +165,6 @@ namespace ActionCode.Persistence
             compressor,
             cryptographer,
             cryptographerKey
-        );
-
-        private FileSystem GetRawFileSystem() => new(
-            serializer,
-            CompressorType.None,
-            CryptographerType.None,
-            cryptographerKey: string.Empty
         );
     }
 }

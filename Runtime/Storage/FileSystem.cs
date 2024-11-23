@@ -3,7 +3,6 @@
 #endif
 
 using UnityEngine;
-using System;
 using System.IO;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -17,9 +16,9 @@ namespace ActionCode.Persistence
     /// </summary>
     public sealed class FileSystem
     {
-        public static string DataPath => Application.persistentDataPath;
+        public const string COMPRESSED_EXTENSION = "sv";
 
-        private const string compressedExtension = "sv";
+        public static string DataPath => Application.persistentDataPath;
 
         private readonly IStream stream;
         private readonly ISerializer serializer;
@@ -63,8 +62,7 @@ namespace ActionCode.Persistence
         /// <returns>A task operation of the saving process.</returns>
         public async Task Save<T>(T data, string name, bool saveRawData)
         {
-            CheckWhetherSerializable<T>("save");
-            var path = GetPath(name, compressedExtension);
+            var path = GetPath(name, COMPRESSED_EXTENSION);
 
             if (saveRawData)
             {
@@ -92,25 +90,23 @@ namespace ActionCode.Persistence
         /// </summary>
         /// <typeparam name="T">The generic data type.</typeparam>
         /// <param name="name">The data file name without extension.</param>
-        /// <param name="useRawFile">Whether to use the uncompressed file.</param>
+        /// <param name="useCompressedFile">Whether to use the compressed/encrypted file.</param>
         /// <returns>A task operation of the loading process.</returns>
-        public async Task<T> Load<T>(string name, bool useRawFile)
+        public async Task<T> Load<T>(string name, bool useCompressedFile)
         {
-            var extension = useRawFile ? serializer.Extension : compressedExtension;
+            var extension = useCompressedFile ? COMPRESSED_EXTENSION : serializer.Extension;
             var path = GetPath(name, extension);
-            return await LoadUsingPath<T>(path);
-        }
-
-        private async Task<T> LoadUsingPath<T>(string path)
-        {
-            CheckWhetherSerializable<T>("deserialize");
             var hasNoFile = !File.Exists(path);
+
             if (hasNoFile) return default;
 
             var content = await stream.Read(path);
 
-            if (compressor != null) content = await compressor.Decompress(content);
-            if (cryptographer != null) content = await cryptographer.Decrypt(content);
+            if (useCompressedFile)
+            {
+                content = await compressor.Decompress(content);
+                content = await cryptographer.Decrypt(content);
+            }
 
             return serializer.Deserialize<T>(content);
         }
@@ -129,15 +125,6 @@ namespace ActionCode.Persistence
         {
             var path = Path.Combine(DataPath, name.Trim());
             return Path.ChangeExtension(path, extension);
-        }
-
-        private static void CheckWhetherSerializable<T>(string action)
-        {
-            if (!typeof(T).IsSerializable)
-                throw new ArgumentException(
-                    $"Tried to {action} non-serializable type {typeof(T).Name}. " +
-                    $"Add the [Serializable] attribute into your class."
-                );
         }
 
 #if RUNTIME_WEBGL
