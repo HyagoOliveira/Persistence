@@ -3,7 +3,8 @@
     "rootNamespace": "ActionCode.Persistence",
     "references": [
         "GUID:dacaed47f477b174c9d20ed2632aff70",
-        "GUID:5acf01c9870ed3243a1f521e40f97bc8"
+        "GUID:5acf01c9870ed3243a1f521e40f97bc8",
+        "GUID:2765e68924a08a94ea0ea66b31c0168f"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -17,6 +18,11 @@
             "name": "com.unity.nuget.newtonsoft-json",
             "expression": "1.0.0",
             "define": "PACKAGE_NEWTONSOFT"
+        },
+        {
+            "name": "com.unity.serialization",
+            "expression": "1.0.0",
+            "define": "PACKAGE_UNITY_SERIALIZATION"
         },
         {
             "name": "com.unity.modules.jsonserialize",

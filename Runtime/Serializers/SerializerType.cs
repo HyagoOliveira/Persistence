@@ -5,6 +5,7 @@ namespace ActionCode.Persistence
         JsonUtility,
         JsonNewtonsoft,
         Xml,
-        Binary
+        Binary,
+        UnityJsonSerialization
     }
 }
