@@ -22,15 +22,8 @@ namespace ActionCode.Persistence
         /// </summary>
         /// <typeparam name="T">The generic data type.</typeparam>
         /// <param name="name">The data file name without extension.</param>
+        /// <param name="useRawFile">Whether to use the uncompressed file.</param>
         /// <returns>A task operation of the loading process.</returns>
-        Task<T> Load<T>(string name);
-
-        /// <summary>
-        /// Loads the generic raw data using the given name. 
-        /// </summary>
-        /// <typeparam name="T">The generic raw data type.</typeparam>
-        /// <param name="name">The raw data file name without extension.</param>
-        /// <returns>A task operation of the loading process.</returns>
-        Task<T> LoadRaw<T>(string name);
+        Task<T> Load<T>(string name, bool useRawFile);
     }
 }

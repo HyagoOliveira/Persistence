@@ -117,9 +117,8 @@ namespace ActionCode.Persistence
 
             try
             {
-                return useRawFile ?
-                    await GetRawFileSystem().LoadRaw<T>(name) :
-                    await GetFileSystem().Load<T>(name);
+                var fileSystem = useRawFile ? GetRawFileSystem() : GetFileSystem();
+                return await fileSystem.Load<T>(name, useRawFile);
             }
             catch (Exception e)
             {
@@ -159,7 +158,6 @@ namespace ActionCode.Persistence
 
             return hasLastSlot ? await Load<T>(lastSlot, useRawFile) : default;
         }
-
 
         private string GetSlotName(int index) => $"{slotName}-{index:D2}";
 

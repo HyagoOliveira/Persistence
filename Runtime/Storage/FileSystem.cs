@@ -19,6 +19,8 @@ namespace ActionCode.Persistence
     {
         public static string DataPath => Application.persistentDataPath;
 
+        private const string compressedExtension = "sv";
+
         private readonly IStream stream;
         private readonly ISerializer serializer;
         private readonly ICompressor compressor;
@@ -54,7 +56,7 @@ namespace ActionCode.Persistence
         public async Task Save<T>(T data, string name, bool saveRawData)
         {
             CheckWhetherSerializable<T>("save");
-            var path = GetPath(name);
+            var path = GetPath(name, compressedExtension);
 
             if (saveRawData)
             {
@@ -77,15 +79,10 @@ namespace ActionCode.Persistence
 #endif
         }
 
-        public async Task<T> Load<T>(string name)
+        public async Task<T> Load<T>(string name, bool useRawFile)
         {
-            var path = GetPath(name);
-            return await LoadUsingPath<T>(path);
-        }
-
-        public async Task<T> LoadRaw<T>(string name)
-        {
-            var path = GetPath(name, serializer.Extension);
+            var extension = useRawFile ? serializer.Extension : compressedExtension;
+            var path = GetPath(name, extension);
             return await LoadUsingPath<T>(path);
         }
 
@@ -113,7 +110,7 @@ namespace ActionCode.Persistence
 #endif
         }
 
-        private static string GetPath(string name, string extension = "sv")
+        private static string GetPath(string name, string extension)
         {
             var path = Path.Combine(DataPath, name.Trim());
             return Path.ChangeExtension(path, extension);
