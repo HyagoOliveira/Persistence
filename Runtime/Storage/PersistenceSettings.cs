@@ -161,14 +161,14 @@ namespace ActionCode.Persistence
 
         private string GetSlotName(int index) => $"{slotName}-{index:D2}";
 
-        private IFileSystem GetFileSystem() => new FileSystem(
+        private FileSystem GetFileSystem() => new(
             serializer,
             compressor,
             cryptographer,
             cryptographerKey
         );
 
-        private IFileSystem GetRawFileSystem() => new FileSystem(
+        private FileSystem GetRawFileSystem() => new(
             serializer,
             CompressorType.None,
             CryptographerType.None,

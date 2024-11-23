@@ -15,7 +15,7 @@ namespace ActionCode.Persistence
     /// <summary>
     /// Default implementation of a File System.
     /// </summary>
-    public sealed class FileSystem : IFileSystem
+    public sealed class FileSystem
     {
         public static string DataPath => Application.persistentDataPath;
 
@@ -53,6 +53,14 @@ namespace ActionCode.Persistence
             this.cryptographer = cryptographer;
         }
 
+        /// <summary>
+        /// Saves the given data using the name. 
+        /// </summary>
+        /// <typeparam name="T">The data generic type.</typeparam>
+        /// <param name="data">The data instance.</param>
+        /// <param name="name">The data file name without extension.</param>
+        /// <param name="saveRawData">Whether to save an additional copy of data without any compression or cryptography.</param>
+        /// <returns>A task operation of the saving process.</returns>
         public async Task Save<T>(T data, string name, bool saveRawData)
         {
             CheckWhetherSerializable<T>("save");
@@ -79,6 +87,13 @@ namespace ActionCode.Persistence
 #endif
         }
 
+        /// <summary>
+        /// Loads the generic data using the given name. 
+        /// </summary>
+        /// <typeparam name="T">The generic data type.</typeparam>
+        /// <param name="name">The data file name without extension.</param>
+        /// <param name="useRawFile">Whether to use the uncompressed file.</param>
+        /// <returns>A task operation of the loading process.</returns>
         public async Task<T> Load<T>(string name, bool useRawFile)
         {
             var extension = useRawFile ? serializer.Extension : compressedExtension;

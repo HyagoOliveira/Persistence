@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Removed
 - IPersistenceSettings interface
+- IFileSystem interface
 - Static PersistenceSettings.LoadRawFile function
 
 ## [2.2.0] - 2023-03-28
