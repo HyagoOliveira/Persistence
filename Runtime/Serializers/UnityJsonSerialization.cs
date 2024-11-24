@@ -18,14 +18,11 @@ namespace ActionCode.Persistence
 #if PACKAGE_UNITY_SERIALIZATION
         public string SerializePretty<T>(T data) => JsonSerialization.ToJson(data, new JsonSerializationParameters { Minified = false });
         public string Serialize<T>(T data) => JsonSerialization.ToJson(data, new JsonSerializationParameters { Minified = true });
-        public T Deserialize<T>(string value) => JsonSerialization.FromJson<T>(value);
-        public void Deserialize<T>(string value, ref T objectToOverride) =>
-            JsonSerialization.FromJsonOverride(value, ref objectToOverride);
+        public void Deserialize<T>(string value, ref T objectToOverride) => JsonSerialization.FromJsonOverride(value, ref objectToOverride);
 #else
         public string SerializePretty<T>(T data) => Serialize(data);
         public string Serialize<T>(T _) => string.Empty;
-        public T Deserialize<T>(string _) => default;
-        public void Deserialize<T>(string value, ref T objectToOverride) { }
+        public void Deserialize<T>(string _, ref T __) { }
 #endif
     }
 }

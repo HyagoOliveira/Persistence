@@ -11,7 +11,7 @@ namespace ActionCode.Persistence
                 SerializerType.JsonNewtonsoft => new NewtonsoftSerializer(),
                 SerializerType.UnityJsonSerialization => new UnityJsonSerialization(),
                 SerializerType.Xml => new XmlSerializer(),
-                _ => null,
+                _ => throw new System.Exception("Serializer not implemented yet."),
             };
         }
     }

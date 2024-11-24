@@ -16,14 +16,11 @@ namespace ActionCode.Persistence
 #if MODULE_JSON_SERIALIZE
         public string SerializePretty<T>(T data) => JsonUtility.ToJson(data, prettyPrint: true);
         public string Serialize<T>(T data) => JsonUtility.ToJson(data);
-        public T Deserialize<T>(string value) => JsonUtility.FromJson<T>(value);
-        public void Deserialize<T>(string value, ref T objectToOverride) =>
-            JsonUtility.FromJsonOverwrite(value, objectToOverride);
+        public void Deserialize<T>(string value, ref T target) => JsonUtility.FromJsonOverwrite(value, target);
 #else
-        public string SerializePretty<T>(T data) => default;
-        public string Serialize<T>(T data) => default;
-        public T Deserialize<T>(string value) => default;
-        public void Deserialize<T>(string value, ref T objectToOverride) { }
+        public string SerializePretty<T>(T _) => default;
+        public string Serialize<T>(T _) => default;
+        public void Deserialize<T>(string _, ref T __) { }
 #endif
     }
 }

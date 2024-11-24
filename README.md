@@ -89,8 +89,8 @@ public sealed class PlayerDataTester : MonoBehaviour
     [ContextMenu("Load")]
     public async void Load()
     {
-        var data = await settings.Load<PlayerData>(slot: 0);
-        var hasData = data != null;
+        var data = new PlayerData();
+        var wasLoaded = await settings.Load(data, slot: 0);
 
         print("Was data loaded? " + hasData);
         print(data);

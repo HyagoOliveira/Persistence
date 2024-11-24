@@ -82,30 +82,21 @@ namespace ActionCode.Persistence
         }
 
         /// <summary>
-        /// Loads the generic data using the given name. 
+        /// Tries to load the generic data using the given name.
         /// </summary>
-        /// <typeparam name="T">The generic data type.</typeparam>
+        /// <typeparam name="T">The generic data type to load.</typeparam>
         /// <param name="name">The data file name without extension.</param>
+        /// <param name="target">The target data to load.</param>
         /// <param name="useCompressedFile">Whether to use the compressed/encrypted file.</param>
         /// <returns>A task operation of the loading process.</returns>
-        public async Task<T> Load<T>(string name, bool useCompressedFile)
+        public async Task<bool> TryLoad<T>(string name, T target, bool useCompressedFile)
         {
             var content = await LoadContent(name, useCompressedFile);
-            return serializer.Deserialize<T>(content);
-        }
+            var hasContent = !string.IsNullOrEmpty(content);
 
-        /// <summary>
-        /// Loads the generic data using the given name into the objectToOverride parameter.
-        /// </summary>
-        /// <typeparam name="T">The generic data type.</typeparam>
-        /// <param name="name">The data file name without extension.</param>
-        /// <param name="objectToOverride">The object being overriding.</param>
-        /// <param name="useCompressedFile">Whether to use the compressed/encrypted file.</param>
-        /// <returns>A task operation of the loading process.</returns>
-        public async Task Load<T>(string name, T objectToOverride, bool useCompressedFile)
-        {
-            var content = await LoadContent(name, useCompressedFile);
-            serializer.Deserialize<T>(content, ref objectToOverride);
+            if (hasContent) serializer.Deserialize(content, ref target);
+
+            return hasContent;
         }
 
         /// <summary>

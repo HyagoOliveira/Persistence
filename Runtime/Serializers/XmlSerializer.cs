@@ -20,14 +20,11 @@ namespace ActionCode.Persistence
             return writer.ToString();
         }
 
-        public T Deserialize<T>(string value)
+        public void Deserialize<T>(string value, ref T target)
         {
             var serializer = new SystemSerialization.XmlSerializer(typeof(T));
             using TextReader reader = new StringReader(value);
-            return (T)serializer.Deserialize(reader);
+            target = (T)serializer.Deserialize(reader);
         }
-
-        public void Deserialize<T>(string value, ref T objectToOverride) =>
-            objectToOverride = Deserialize<T>(value);
     }
 }
