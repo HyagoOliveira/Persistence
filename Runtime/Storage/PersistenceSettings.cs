@@ -109,15 +109,12 @@ namespace ActionCode.Persistence
         /// <returns>A task operation of the loading process.</returns>
         public async Task<T> Load<T>(string name, bool useRawFile = false)
         {
-#if !UNITY_EDITOR
-            useRawFile = false;
-#endif
-
             OnLoadStart?.Invoke();
 
             try
             {
-                return await GetFileSystem().Load<T>(name, !useRawFile);
+                var useCompressedFile = !useRawFile && Application.isEditor;
+                return await GetFileSystem().Load<T>(name, useCompressedFile);
             }
             catch (Exception e)
             {
