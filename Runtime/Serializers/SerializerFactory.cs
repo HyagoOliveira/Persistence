@@ -6,10 +6,10 @@ namespace ActionCode.Persistence
         {
             return type switch
             {
-                SerializerType.Binary => BinarySerializer.IsAvailable() ? new BinarySerializer() : null,
-                SerializerType.JsonUtility => JsonUtilitySerializer.IsAvailable() ? new JsonUtilitySerializer() : null,
-                SerializerType.JsonNewtonsoft => NewtonsoftSerializer.IsAvailable() ? new NewtonsoftSerializer() : null,
-                SerializerType.UnityJsonSerialization => UnityJsonSerialization.IsAvailable() ? new UnityJsonSerialization() : null,
+                SerializerType.Binary => new BinarySerializer(),
+                SerializerType.JsonUtility => new JsonUtilitySerializer(),
+                SerializerType.JsonNewtonsoft => new NewtonsoftSerializer(),
+                SerializerType.UnityJsonSerialization => new UnityJsonSerialization(),
                 SerializerType.Xml => new XmlSerializer(),
                 _ => null,
             };

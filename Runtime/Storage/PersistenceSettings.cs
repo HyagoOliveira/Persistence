@@ -101,6 +101,16 @@ namespace ActionCode.Persistence
         }
 
         /// <summary>
+        /// Loads using the given slot index.
+        /// </summary>
+        /// <typeparam name="T"><inheritdoc cref="Load{T}(string, bool)"/></typeparam>
+        /// <param name="slotIndex">The slot index to use.</param>
+        /// <param name="useRawFile">Whether to use the raw file to fast load the data without using compressor or cryptography.</param>
+        /// <returns><inheritdoc cref="Load{T}(string, bool)"/></returns>
+        public async Task<T> Load<T>(int slotIndex, bool useRawFile = false) =>
+            await Load<T>(GetSlotName(slotIndex), useRawFile);
+
+        /// <summary>
         /// Loads using the given name.
         /// </summary>
         /// <typeparam name="T">The generic type of the loaded data.</typeparam>
@@ -129,15 +139,6 @@ namespace ActionCode.Persistence
             return default;
         }
 
-        /// <summary>
-        /// Loads using the given slot index.
-        /// </summary>
-        /// <typeparam name="T"><inheritdoc cref="Load{T}(string, bool)"/></typeparam>
-        /// <param name="slotIndex">The slot index to use.</param>
-        /// <param name="useRawFile">Whether to use the raw file to fast load the data without using compressor or cryptography.</param>
-        /// <returns><inheritdoc cref="Load{T}(string, bool)"/></returns>
-        public async Task<T> Load<T>(int slotIndex, bool useRawFile = false) =>
-            await Load<T>(GetSlotName(slotIndex), useRawFile);
 
         /// <summary>
         /// Loads from the last saved slot.
@@ -153,6 +154,46 @@ namespace ActionCode.Persistence
             var hasLastSlot = lastSlot != invalidSlot;
 
             return hasLastSlot ? await Load<T>(lastSlot, useRawFile) : default;
+        }
+
+        /// <summary>
+        /// Loads using the given slot index into the objectToOverride parameter.
+        /// Use to quickly load ScriptableObjects.
+        /// </summary>
+        /// <typeparam name="T"><inheritdoc cref="Load{T}(string, bool)"/></typeparam>
+        /// <param name="slotIndex">The slot index to use.</param>
+        /// <param name="objectToOverride">The object being overriding.</param>
+        /// <param name="useRawFile">Whether to use the raw file to fast load the data without using compressor or cryptography.</param>
+        /// <returns><inheritdoc cref="Load{T}(string, bool)"/></returns>
+        public async Task Load<T>(int slotIndex, T objectToOverride, bool useRawFile = false) =>
+            await Load<T>(GetSlotName(slotIndex), objectToOverride, useRawFile);
+
+        /// <summary>
+        /// Loads using the given name into the objectToOverride parameter.
+        /// </summary>
+        /// <typeparam name="T"><inheritdoc cref="Load{T}(string, bool)"/></typeparam>
+        /// <param name="name">The file name to load.</param>
+        /// <param name="objectToOverride">The object being overriding.</param>
+        /// <param name="useRawFile">Whether to use the raw file to fast load the data without using compressor or cryptography.</param>
+        /// <returns><inheritdoc cref="Load{T}(string, bool)"/></returns>
+        public async Task Load<T>(string name, T objectToOverride, bool useRawFile = false)
+        {
+            OnLoadStart?.Invoke();
+
+            try
+            {
+                var useCompressedFile = !useRawFile && Application.isEditor;
+                await GetFileSystem().Load<T>(name, objectToOverride, useCompressedFile);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                OnLoadError?.Invoke(e);
+            }
+            finally
+            {
+                OnLoadEnd?.Invoke();
+            }
         }
 
         private string GetSlotName(int index) => $"{slotName}-{index:D2}";

@@ -94,11 +94,31 @@ namespace ActionCode.Persistence
         /// <returns>A task operation of the loading process.</returns>
         public async Task<T> Load<T>(string name, bool useCompressedFile)
         {
+            var content = await LoadContent(name, useCompressedFile);
+            return serializer.Deserialize<T>(content);
+        }
+
+        /// <summary>
+        /// Loads the generic data using the given name into the objectToOverride parameter.
+        /// </summary>
+        /// <typeparam name="T">The generic data type.</typeparam>
+        /// <param name="name">The data file name without extension.</param>
+        /// <param name="objectToOverride">The object being overriding.</param>
+        /// <param name="useCompressedFile">Whether to use the compressed/encrypted file.</param>
+        /// <returns>A task operation of the loading process.</returns>
+        public async Task Load<T>(string name, T objectToOverride, bool useCompressedFile)
+        {
+            var content = await LoadContent(name, useCompressedFile);
+            serializer.Deserialize<T>(content, ref objectToOverride);
+        }
+
+        private async Task<string> LoadContent(string name, bool useCompressedFile)
+        {
             var extension = useCompressedFile ? COMPRESSED_EXTENSION : serializer.Extension;
             var path = GetPath(name, extension);
             var hasNoFile = !File.Exists(path);
 
-            if (hasNoFile) return default;
+            if (hasNoFile) throw new FileNotFoundException($"File {path} does not exists");
 
             var content = await stream.Read(path);
 
@@ -108,7 +128,7 @@ namespace ActionCode.Persistence
                 content = await cryptographer.Decrypt(content);
             }
 
-            return serializer.Deserialize<T>(content);
+            return content;
         }
 
         public static void OpenSaveFolder()

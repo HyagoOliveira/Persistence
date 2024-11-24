@@ -6,7 +6,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- Add Unity Json Serialization
+- Unity Json Serialization backend
+- Support to ScriptableObject serialization
 
 ### Changed
 - Add optional useRawFile parameter into PersistenceSettings.Load functions

@@ -14,6 +14,13 @@ namespace ActionCode.Persistence
     {
         public string Extension => "bin";
 
+        public BinarySerializer()
+        {
+#if !BINARY_AVAILABLE
+            throw new System.Exception("Binary Serializer isn't supported on Windows Store or UWP.");
+#endif
+        }
+
         public string SerializePretty<T>(T data) => Serialize(data);
 
 #if BINARY_AVAILABLE
@@ -34,19 +41,13 @@ namespace ActionCode.Persistence
             ms.Position = 0;
             return (T)formatter.Deserialize(ms);
         }
+
+        public void Deserialize<T>(string value, ref T objectToOverride) =>
+            objectToOverride = Deserialize<T>(value);
 #else
         public string Serialize<T>(T _) => string.Empty;
         public T Deserialize<T>(string _) => default;
+        public void Deserialize<T>(string value, ref T objectToOverride) { }
 #endif
-
-        public static bool IsAvailable()
-        {
-#if BINARY_AVAILABLE
-            return true;
-#else
-            UnityEngine.Debug.LogError("Binary Serializer isn't supported on Windows Store or UWP.");
-            return false;
-#endif
-        }
     }
 }

@@ -26,5 +26,8 @@ namespace ActionCode.Persistence
             using TextReader reader = new StringReader(value);
             return (T)serializer.Deserialize(reader);
         }
+
+        public void Deserialize<T>(string value, ref T objectToOverride) =>
+            objectToOverride = Deserialize<T>(value);
     }
 }
