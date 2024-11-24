@@ -78,11 +78,7 @@ namespace ActionCode.Persistence
             if (compressor != null) content = await compressor.Compress(content);
 
             await stream.Write(path, content);
-
-#if RUNTIME_WEBGL
-            // Flushes the changes into the Browser IndexedDB.
-            SyncDB();
-#endif
+            TryFlushChanges();
         }
 
         /// <summary>
@@ -110,6 +106,27 @@ namespace ActionCode.Persistence
         {
             var content = await LoadContent(name, useCompressedFile);
             serializer.Deserialize<T>(content, ref objectToOverride);
+        }
+
+        /// <summary>
+        /// Deletes the file using the given name.
+        /// It will delete both uncompressed and compressed files.
+        /// </summary>
+        /// <param name="name">The data file name without extension.</param>
+        public void Delete(string name)
+        {
+            var compressedPath = GetPath(name, COMPRESSED_EXTENSION);
+            var uncompressedPath = GetPath(name, serializer.Extension);
+
+            TryDelete(compressedPath);
+            TryDelete(uncompressedPath);
+
+            TryFlushChanges();
+        }
+
+        private void TryDelete(string path)
+        {
+            if (File.Exists(path)) File.Delete(path);
         }
 
         private async Task<string> LoadContent(string name, bool useCompressedFile)
@@ -145,6 +162,14 @@ namespace ActionCode.Persistence
         {
             var path = Path.Combine(DataPath, name.Trim());
             return Path.ChangeExtension(path, extension);
+        }
+
+        private void TryFlushChanges()
+        {
+#if RUNTIME_WEBGL
+            // Flushes the changes into the Browser IndexedDB.
+            SyncDB();
+#endif
         }
 
 #if RUNTIME_WEBGL

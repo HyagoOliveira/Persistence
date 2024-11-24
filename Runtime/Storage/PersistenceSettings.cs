@@ -139,7 +139,6 @@ namespace ActionCode.Persistence
             return default;
         }
 
-
         /// <summary>
         /// Loads from the last saved slot.
         /// </summary>
@@ -183,7 +182,7 @@ namespace ActionCode.Persistence
             try
             {
                 var useCompressedFile = !useRawFile && Application.isEditor;
-                await GetFileSystem().Load<T>(name, objectToOverride, useCompressedFile);
+                await GetFileSystem().Load(name, objectToOverride, useCompressedFile);
             }
             catch (Exception e)
             {
@@ -195,6 +194,18 @@ namespace ActionCode.Persistence
                 OnLoadEnd?.Invoke();
             }
         }
+
+        /// <summary>
+        /// Deletes the file using the given index.
+        /// </summary>
+        /// <param name="slotIndex">The file slot index to delete.</param>
+        public void Delete(int slotIndex) => GetFileSystem().Delete(GetSlotName(slotIndex));
+
+        /// <summary>
+        /// Deletes the file using the given name.
+        /// </summary>
+        /// <param name="name">The file name to delete.</param>
+        public void Delete(string name) => GetFileSystem().Delete(name);
 
         private string GetSlotName(int index) => $"{slotName}-{index:D2}";
 
