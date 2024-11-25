@@ -172,6 +172,12 @@ namespace ActionCode.Persistence
         /// <returns><inheritdoc cref="TryDelete(int)"/></returns>
         public bool TryDelete(string name) => GetFileSystem().TryDelete(name);
 
+        /// <summary>
+        /// Tries to delete only the saved files inside the persistent folder.
+        /// </summary>
+        /// <returns>Whether the saved files were deleted.</returns>
+        public bool TryDeleteAll() => GetFileSystem().TryDeleteAll();
+
         private string GetSlotName(int index) => $"{slotName}-{index:D2}";
 
         private FileSystem GetFileSystem() => new(

@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using ActionCode.AsyncIO;
 using ActionCode.Cryptography;
+using System.Collections.Generic;
 
 namespace ActionCode.Persistence
 {
@@ -113,6 +114,31 @@ namespace ActionCode.Persistence
             TryFlushChanges();
 
             return wasDeleted;
+        }
+
+        /// <summary>
+        /// Tries to delete only the saved files inside the persistent folder.
+        /// </summary>
+        /// <returns>Whether the saved files were deleted.</returns>
+        public bool TryDeleteAll()
+        {
+            foreach (var fileName in GetFileNames())
+            {
+                var wasDeleted = TryDelete(fileName);
+                if (!wasDeleted) return false;
+            }
+
+            return true;
+        }
+
+        public IEnumerable<string> GetFileNames()
+        {
+            var compressedFilePattern = $"*.{COMPRESSED_EXTENSION}";
+            var allFiles = Directory.EnumerateFiles(DataPath, compressedFilePattern);
+            foreach (var filePath in allFiles)
+            {
+                yield return Path.GetFileNameWithoutExtension(filePath);
+            }
         }
 
         private bool TryDelete(string name, string extension)
