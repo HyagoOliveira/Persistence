@@ -63,6 +63,9 @@ namespace ActionCode.Persistence
         /// <returns>A task operation of the saving process.</returns>
         public async Task Save<T>(T data, string name, bool saveRawData)
         {
+            var invalidName = string.IsNullOrEmpty(name);
+            if (invalidName) throw new System.Exception($"Invalid file name: '{name}'");
+
             var path = GetPath(name, COMPRESSED_EXTENSION);
 
             if (saveRawData)
@@ -162,7 +165,7 @@ namespace ActionCode.Persistence
             var path = GetPath(name, extension);
             var hasNoFile = !File.Exists(path);
 
-            if (hasNoFile) throw new FileNotFoundException($"File {path} does not exists");
+            if (hasNoFile) return string.Empty;
 
             var content = await stream.Read(path);
 

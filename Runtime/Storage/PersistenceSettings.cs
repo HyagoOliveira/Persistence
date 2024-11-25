@@ -105,29 +105,29 @@ namespace ActionCode.Persistence
         /// Tries to load the data using the given slot index.
         /// </summary>
         /// <typeparam name="T">A generic data type to load.</typeparam>
+        /// <param name="data">The data to load.</param>
         /// <param name="slotIndex">The slot index to use.</param>
-        /// <param name="target">The target data to load.</param>
         /// <param name="useRawFile">Whether to use the raw file to fast load the data without using compression or cryptography.</param>
         /// <returns>A task operation of the loading process.</returns>
-        public async Task<bool> TryLoad<T>(int slotIndex, T target, bool useRawFile = false) =>
-            await TryLoad(GetSlotName(slotIndex), target, useRawFile);
+        public async Task<bool> TryLoad<T>(T data, int slotIndex, bool useRawFile = false) =>
+            await TryLoad(data, GetSlotName(slotIndex), useRawFile);
 
         /// <summary>
         /// Tries to load the data using the given name.
         /// </summary>
-        /// <typeparam name="T"><inheritdoc cref="TryLoad{T}(int, T, bool)"/></typeparam>
-        /// <param name="name">The file name to load.</param>
-        /// <param name="target"><inheritdoc cref="TryLoad{T}(int, T, bool)" path="/param[@name='target']"/></param>
-        /// <param name="useRawFile"><inheritdoc cref="TryLoad{T}(int, T, bool)" path="/param[@name='useRawFile']"/></param>
-        /// <returns><inheritdoc cref="TryLoad{T}(int, T, bool)"/></returns>
-        public async Task<bool> TryLoad<T>(string name, T target, bool useRawFile = false)
+        /// <typeparam name="T"><inheritdoc cref="TryLoad{T}(T, int, bool)"/></typeparam>
+        /// <param name="data"><inheritdoc cref="TryLoad{T}(T, int, bool)" path="/param[@name='data']"/></param>
+        /// <param name="name">The file name to load. Don't use any extension.</param>
+        /// <param name="useRawFile"><inheritdoc cref="TryLoad{T}(T, int, bool)" path="/param[@name='useRawFile']"/></param>
+        /// <returns><inheritdoc cref="TryLoad{T}(T, int, bool)"/></returns>
+        public async Task<bool> TryLoad<T>(T data, string name, bool useRawFile = false)
         {
             OnLoadStart?.Invoke();
 
             try
             {
                 var useCompressedFile = !useRawFile && Application.isEditor;
-                return await GetFileSystem().TryLoad(name, target, useCompressedFile);
+                return await GetFileSystem().TryLoad(name, data, useCompressedFile);
             }
             catch (Exception e)
             {
@@ -145,10 +145,10 @@ namespace ActionCode.Persistence
         /// <summary>
         /// Tries to load the data from the last saved slot.
         /// </summary>
-        /// <typeparam name="T"><inheritdoc cref="TryLoad{T}(int, T, bool)"/></typeparam>
-        /// <param name="target"><inheritdoc cref="TryLoad{T}(int, T, bool)" path="/param[@name='target']"/></param>
-        /// <param name="useRawFile"><inheritdoc cref="TryLoad{T}(int, T, bool)" path="/param[@name='useRawFile']"/></param>
-        /// <returns><inheritdoc cref="TryLoad{T}(int, T, bool)"/></returns>
+        /// <typeparam name="T"><inheritdoc cref="TryLoad{T}(T, int, bool)"/></typeparam>
+        /// <param name="target"><inheritdoc cref="TryLoad{T}(T, int, bool)" path="/param[@name='data']"/></param>
+        /// <param name="useRawFile"><inheritdoc cref="TryLoad{T}(T, int, bool)" path="/param[@name='useRawFile']"/></param>
+        /// <returns><inheritdoc cref="TryLoad{T}(T, int, bool)"/></returns>
         public async Task<bool> TryLoadLastSlot<T>(T target, bool useRawFile = false)
         {
             const int invalidSlot = -1;
@@ -156,7 +156,7 @@ namespace ActionCode.Persistence
             var lastSlot = PlayerPrefs.GetInt(lastSlotKey, defaultValue: invalidSlot);
             var hasLastSlot = lastSlot != invalidSlot;
 
-            return hasLastSlot && await TryLoad(lastSlot, target, useRawFile);
+            return hasLastSlot && await TryLoad(target, lastSlot, useRawFile);
         }
 
         /// <summary>
