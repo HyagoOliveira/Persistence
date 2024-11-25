@@ -131,6 +131,10 @@ namespace ActionCode.Persistence
             return true;
         }
 
+        /// <summary>
+        /// Returns all file names (without extension) saved on the persistent folder.
+        /// </summary>
+        /// <returns>An enumerable list containing all file names.</returns>
         public IEnumerable<string> GetFileNames()
         {
             var compressedFilePattern = $"*.{COMPRESSED_EXTENSION}";

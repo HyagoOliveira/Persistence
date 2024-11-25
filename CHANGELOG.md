@@ -8,6 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - PersistenceSettings.TryDelete function
 - PersistenceSettings.TryDeleteAll function
+- PersistenceSettings.GetNames function
 - Unity Json Serialization backend
 - Support to ScriptableObject serialization
 

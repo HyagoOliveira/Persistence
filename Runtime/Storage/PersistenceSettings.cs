@@ -2,6 +2,7 @@ using UnityEngine;
 using System;
 using System.Threading.Tasks;
 using ActionCode.Cryptography;
+using System.Collections.Generic;
 
 namespace ActionCode.Persistence
 {
@@ -177,6 +178,12 @@ namespace ActionCode.Persistence
         /// </summary>
         /// <returns>Whether the saved files were deleted.</returns>
         public bool TryDeleteAll() => GetFileSystem().TryDeleteAll();
+
+        /// <summary>
+        /// Returns all file names (without extension) saved on the persistent folder.
+        /// </summary>
+        /// <returns>An enumerable list containing all file names.</returns>
+        public IEnumerable<string> GetNames() => GetFileSystem().GetFileNames();
 
         private string GetSlotName(int index) => $"{slotName}-{index:D2}";
 
