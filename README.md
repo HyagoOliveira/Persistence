@@ -90,7 +90,7 @@ public sealed class PlayerDataTester : MonoBehaviour
     public async void Load()
     {
         var data = new PlayerData();
-        var wasLoaded = await settings.Load(data, slot: 0);
+        var wasLoaded = await settings.TryLoad(data, slot: 0);
 
         print("Was data loaded? " + hasData);
         print(data);
@@ -115,10 +115,10 @@ To check the files, click on the **Open Save Folder** button.
 
 ![The SaveRawFile](/Docs~/SaveRawFile-OpenSaveFolder.png "The Save Raw File option")
 
-When in the develop process, you can set the optional boolean parameter *useRawFile* from any `PersistenceSettings.Load<T>()` function to quickly load your data from the raw file.
+When in the develop process, you can set the optional boolean parameter *useRawFile* from any `PersistenceSettings.TryLoad<T>()` function to quickly load your data from the raw file.
 
 ```csharp
-var data = await settings.Load<PlayerData>(slot: 0, useRawFile: true);
+var wasLoaded = await settings.TryLoad(slot: 0, target: data, useRawFile: true);
 ```
 
 This function is faster since it will not uncompress and decrypt the raw file and you can edit this file manually.
