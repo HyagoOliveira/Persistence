@@ -159,16 +159,18 @@ namespace ActionCode.Persistence
         }
 
         /// <summary>
-        /// Deletes the file using the given index.
+        /// Tries to delete the file using the given index.
         /// </summary>
         /// <param name="slotIndex">The file slot index to delete.</param>
-        public void Delete(int slotIndex) => GetFileSystem().Delete(GetSlotName(slotIndex));
+        /// <returns>Whether the file was deleted.</returns>
+        public bool TryDelete(int slotIndex) => TryDelete(GetSlotName(slotIndex));
 
         /// <summary>
-        /// Deletes the file using the given name.
+        /// Tries to delete the file using the given name.
         /// </summary>
         /// <param name="name">The file name to delete.</param>
-        public void Delete(string name) => GetFileSystem().Delete(name);
+        /// <returns><inheritdoc cref="TryDelete(int)"/></returns>
+        public bool TryDelete(string name) => GetFileSystem().TryDelete(name);
 
         private string GetSlotName(int index) => $"{slotName}-{index:D2}";
 

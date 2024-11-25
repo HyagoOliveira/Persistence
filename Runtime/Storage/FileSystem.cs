@@ -100,24 +100,30 @@ namespace ActionCode.Persistence
         }
 
         /// <summary>
-        /// Deletes the file using the given name.
+        /// Tries to delete the file using the given name.
         /// It will delete both uncompressed and compressed files.
         /// </summary>
         /// <param name="name">The data file name without extension.</param>
-        public void Delete(string name)
+        /// <returns>Whether the compressed file was deleted.</returns>
+        public bool TryDelete(string name)
         {
-            var compressedPath = GetPath(name, COMPRESSED_EXTENSION);
-            var uncompressedPath = GetPath(name, serializer.Extension);
-
-            TryDelete(compressedPath);
-            TryDelete(uncompressedPath);
+            TryDelete(name, serializer.Extension); // Raw file does not exists in build
+            var wasDeleted = TryDelete(name, COMPRESSED_EXTENSION);
 
             TryFlushChanges();
+
+            return wasDeleted;
         }
 
-        private void TryDelete(string path)
+        private bool TryDelete(string name, string extension)
         {
-            if (File.Exists(path)) File.Delete(path);
+            var path = GetPath(name, extension);
+            var invalidFilie = !File.Exists(path);
+
+            if (invalidFilie) return false;
+
+            File.Delete(path);
+            return true;
         }
 
         private async Task<string> LoadContent(string name, bool useCompressedFile)
