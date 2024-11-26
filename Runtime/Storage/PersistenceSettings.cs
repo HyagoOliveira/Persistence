@@ -123,10 +123,10 @@ namespace ActionCode.Persistence
         public async Task<bool> TryLoad<T>(T data, string name, bool useRawFile = false)
         {
             OnLoadStart?.Invoke();
+            var useCompressedFile = !useRawFile;
 
             try
             {
-                var useCompressedFile = !useRawFile && Application.isEditor;
                 return await GetFileSystem().TryLoad(name, data, useCompressedFile);
             }
             catch (Exception e)

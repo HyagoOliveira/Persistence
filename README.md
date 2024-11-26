@@ -105,7 +105,7 @@ public sealed class PlayerDataTester : MonoBehaviour
 Go to the Persistence Menu into the Project Settings or select the Persistence Settings asset.
 
 If you want to debug your persisted data, make sure to enable the **Save Raw File**. 
-This way a legible file with the proper serializer extension will be saved next the encrypted/compressed one.
+This way a legible file with the serializer extension will be saved next the encrypted/compressed one.
 
 ![The SaveSlotFiles](/Docs~/SaveSlotFiles.png "The Save Slot Files")
 
@@ -115,13 +115,13 @@ To check the files, click on the **Open Save Folder** button.
 
 ![The SaveRawFile](/Docs~/SaveRawFile-OpenSaveFolder.png "The Save Raw File option")
 
-When in the develop process, you can set the optional boolean parameter *useRawFile* from any `PersistenceSettings.TryLoad<T>()` function to quickly load your data from the raw file.
+When in the develop process, you can enable the optional boolean parameter *useRawFile* from any `PersistenceSettings.TryLoad<T>()` function to quickly load your data from the raw file.
 
 ```csharp
 var wasLoaded = await settings.TryLoad(slot: 0, target: data, useRawFile: true);
 ```
 
-This function is faster since it will not uncompress and decrypt the raw file and you can edit this file manually.
+This function is faster since it will not uncompress and decrypt the raw file and you can edit this text file manually.
 
 ## Installation
 
