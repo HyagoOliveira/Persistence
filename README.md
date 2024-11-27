@@ -2,7 +2,7 @@
 
 * Save Serialized data using encryption and compression
 * Unity minimum version: **2019.3**
-* Current version: **2.2.0**
+* Current version: **3.0.0**
 * License: **MIT**
 * Dependencies:
     - [com.actioncode.async-io : 1.0.0](https://github.com/HyagoOliveira/Async-IO/tree/1.0.0)
@@ -118,10 +118,14 @@ To check the files, click on the **Open Save Folder** button.
 When in the develop process, you can enable the optional boolean parameter *useRawFile* from any `PersistenceSettings.TryLoad<T>()` function to quickly load your data from the raw file.
 
 ```csharp
-var wasLoaded = await settings.TryLoad(slot: 0, target: data, useRawFile: true);
+var wasLoaded = await settings.TryLoad(data, slot: 0, useRawFile: true);
 ```
 
 This function is faster since it will not uncompress and decrypt the raw file and you can edit this text file manually.
+
+### Delete and List Data
+
+You can also List all files or delete them using PersistenceSettings class.
 
 ## Installation
 
