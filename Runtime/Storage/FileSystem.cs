@@ -4,7 +4,6 @@
 
 using UnityEngine;
 using System.IO;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using ActionCode.AsyncIO;
 using ActionCode.Cryptography;
@@ -180,11 +179,8 @@ namespace ActionCode.Persistence
 
         public static void OpenSaveFolder()
         {
-#if UNITY_EDITOR_WIN
-            var path = DataPath.Replace(@"/", @"\") + @"\";
-            Process.Start("explorer.exe", "/select, " + path);
-#elif UNITY_EDITOR_OSX || UNITY_EDITOR_LINUX
-            Process.Start("open", $"-R \"{DataPath}\"");
+#if UNITY_EDITOR
+            UnityEditor.EditorUtility.RevealInFinder(DataPath + "/");
 #endif
         }
 

@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - PersistenceSettings.GetLastSlot function
 
+### Fixed
+- FileSystem.OpenSaveFolder
+
 ## [3.0.0] - 2024-11-27
 ### Added
 - PersistenceSettings.TryDelete function
