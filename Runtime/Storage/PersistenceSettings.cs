@@ -153,7 +153,7 @@ namespace ActionCode.Persistence
         {
             const int invalidSlot = -1;
 
-            var lastSlot = PlayerPrefs.GetInt(lastSlotKey, defaultValue: invalidSlot);
+            var lastSlot = GetLastSlot(invalidSlot);
             var hasLastSlot = lastSlot != invalidSlot;
 
             return hasLastSlot && await TryLoad(target, lastSlot, useRawFile);
@@ -184,6 +184,13 @@ namespace ActionCode.Persistence
         /// </summary>
         /// <returns>An enumerable list containing all file names.</returns>
         public IEnumerable<string> GetNames() => GetFileSystem().GetFileNames();
+
+        /// <summary>
+        /// Returns the last slot used or the given default value.
+        /// </summary>
+        /// <param name="defaultValue">The default value if the last slot is not found.</param>
+        /// <returns>Always an integer.</returns>
+        public int GetLastSlot(int defaultValue = 0) => PlayerPrefs.GetInt(lastSlotKey, defaultValue);
 
         private string GetSlotName(int index) => $"{slotName}-{index:D2}";
 
