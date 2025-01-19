@@ -192,13 +192,13 @@ namespace ActionCode.Persistence
         /// <returns>Always an integer.</returns>
         public int GetLastSlot(int defaultValue = 0) => PlayerPrefs.GetInt(lastSlotKey, defaultValue);
 
-        private string GetSlotName(int index) => $"{slotName}-{index:D2}";
-
-        private FileSystem GetFileSystem() => new(
+        public FileSystem GetFileSystem() => new(
             serializer,
             compressor,
             cryptographer,
             cryptographerKey
         );
+
+        public string GetSlotName(int index) => $"{slotName}-{index:D2}";
     }
 }

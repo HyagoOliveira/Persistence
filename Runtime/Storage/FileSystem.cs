@@ -16,8 +16,9 @@ namespace ActionCode.Persistence
     /// </summary>
     public sealed class FileSystem
     {
-        public const string COMPRESSED_EXTENSION = "sv";
+        public ISerializer Serializer => serializer;
 
+        public const string COMPRESSED_EXTENSION = "sv";
         public static string DataPath => Application.persistentDataPath;
 
         private readonly IStream stream;
