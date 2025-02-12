@@ -18,8 +18,10 @@ namespace ActionCode.Persistence
     {
         public ISerializer Serializer => serializer;
 
+        public const string FOLDER = "Persistence";
         public const string COMPRESSED_EXTENSION = "sv";
-        public static string DataPath => Application.persistentDataPath;
+
+        public static string DataPath => Application.persistentDataPath + "/" + FOLDER;
 
         private readonly IStream stream;
         private readonly ISerializer serializer;

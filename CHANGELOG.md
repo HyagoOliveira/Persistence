@@ -11,6 +11,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - FileSystem.OpenSaveFolder
 
+### Changed
+- Files are saved/loaded inside Persistence folder
+
 ## [3.0.0] - 2024-11-27
 ### Added
 - PersistenceSettings.TryDelete function
