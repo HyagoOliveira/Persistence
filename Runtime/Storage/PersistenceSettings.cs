@@ -16,10 +16,14 @@ namespace ActionCode.Persistence
         public SerializerType serializer;
         [Tooltip("The Compressor type to use.")]
         public CompressorType compressor;
+
+        [Header("Cryptography")]
         [Tooltip("The Cryptographer type to use.")]
         public CryptographerType cryptographer;
         [Tooltip("The cryptographer key to use.")]
         public string cryptographerKey = "H2h2xZe83AX90788QNqJXRiWX88xWI2b";
+
+        [Header("Slots")]
         [Tooltip("The Save Slot name to use.")]
         public string slotName = "SaveSlot";
         [Tooltip("The Slot name used with PlayerPrefs to save the last index.")]
