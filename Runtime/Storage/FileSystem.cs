@@ -142,6 +142,9 @@ namespace ActionCode.Persistence
         /// <returns>An enumerable list containing all file names.</returns>
         public IEnumerable<string> GetFileNames()
         {
+            var hasInvalidPath = !Directory.Exists(DataPath);
+            if (hasInvalidPath) yield break;
+
             var compressedFilePattern = $"*.{COMPRESSED_EXTENSION}";
             var allFiles = Directory.EnumerateFiles(DataPath, compressedFilePattern);
             foreach (var filePath in allFiles)
