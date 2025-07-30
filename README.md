@@ -2,7 +2,7 @@
 
 * Save Serialized data using encryption and compression
 * Unity minimum version: **2019.3**
-* Current version: **3.1.0**
+* Current version: **3.1.1**
 * License: **MIT**
 * Dependencies:
     - [com.actioncode.async-io : 1.0.0](https://github.com/HyagoOliveira/Async-IO/tree/1.0.0)
