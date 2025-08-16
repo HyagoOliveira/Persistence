@@ -21,7 +21,7 @@ namespace ActionCode.Persistence
         public const string FOLDER = "Persistence";
         public const string COMPRESSED_EXTENSION = "sv";
 
-        public static string DataPath => Application.persistentDataPath + "/" + FOLDER;
+        public static string DataPath => Path.Combine(Application.persistentDataPath, FOLDER);
 
         private readonly IStream stream;
         private readonly ISerializer serializer;
@@ -185,9 +185,17 @@ namespace ActionCode.Persistence
 
         public static void OpenSaveFolder()
         {
+            CheckDataPath();
+
 #if UNITY_EDITOR
             UnityEditor.EditorUtility.RevealInFinder(DataPath + "/");
 #endif
+        }
+
+        private static void CheckDataPath()
+        {
+            var hasInvalidDataPath = !Directory.Exists(DataPath);
+            if (hasInvalidDataPath) Directory.CreateDirectory(DataPath);
         }
 
         private static string GetPath(string name, string extension)
