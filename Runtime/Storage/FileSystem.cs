@@ -101,34 +101,29 @@ namespace ActionCode.Persistence
         }
 
         /// <summary>
-        /// Tries to delete the file using the given name.
-        /// It will delete both uncompressed and compressed files.
+        /// Deletes the file using the given name.
         /// </summary>
+        /// <remarks>
+        /// It will delete both uncompressed and compressed files.
+        /// </remarks>
         /// <param name="name">The data file name without extension.</param>
-        /// <returns>Whether the compressed file was deleted.</returns>
-        public bool TryDelete(string name)
+        public void Delete(string name)
         {
-            TryDelete(name, serializer.Extension); // Raw file does not exists in build
-            var wasDeleted = TryDelete(name, COMPRESSED_EXTENSION);
+            Delete(name, serializer.Extension); // Raw file does not exists in build
+            Delete(name, COMPRESSED_EXTENSION);
 
             TryFlushChanges();
-
-            return wasDeleted;
         }
 
         /// <summary>
-        /// Tries to delete only the saved files inside the persistent folder.
+        /// Deletes all the saved files inside the persistent folder.
         /// </summary>
-        /// <returns>Whether the saved files were deleted.</returns>
-        public bool TryDeleteAll()
+        public void DeleteAll()
         {
             foreach (var fileName in GetFileNames())
             {
-                var wasDeleted = TryDelete(fileName);
-                if (!wasDeleted) return false;
+                Delete(fileName);
             }
-
-            return true;
         }
 
         /// <summary>
@@ -148,15 +143,11 @@ namespace ActionCode.Persistence
             }
         }
 
-        private bool TryDelete(string name, string extension)
+        private void Delete(string name, string extension)
         {
             var path = GetPath(name, extension);
-            var invalidFilie = !File.Exists(path);
-
-            if (invalidFilie) return false;
-
-            File.Delete(path);
-            return true;
+            var isValidFilie = File.Exists(path);
+            if (isValidFilie) File.Delete(path);
         }
 
         private async Awaitable<string> LoadContent(string name, bool useCompressedFile)

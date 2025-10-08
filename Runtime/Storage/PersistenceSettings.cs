@@ -1,13 +1,11 @@
 using UnityEngine;
-using System;
-using System.Threading.Tasks;
 using ActionCode.Cryptography;
-using System.Collections.Generic;
+using System;
 
 namespace ActionCode.Persistence
 {
     /// <summary>
-    /// Serialize data using encryption and compression.
+    /// Persist generic data using encryption and compression.
     /// </summary>
     [CreateAssetMenu(fileName = "PersistenceSettings", menuName = "ActionCode/Persistence Settings", order = 110)]
     public sealed class PersistenceSettings : ScriptableObject
@@ -23,22 +21,17 @@ namespace ActionCode.Persistence
         [Tooltip("The cryptographer key to use.")]
         public string cryptographerKey = "H2h2xZe83AX90788QNqJXRiWX88xWI2b";
 
-        [Header("Slots")]
-        [Tooltip("The Save Slot name to use.")]
-        public string slotName = "SaveSlot";
-        [Tooltip("The Slot name used with PlayerPrefs to save the last index.")]
-        public string lastSlotKey = "LastSlot";
-        [Tooltip("Whether to save the uncompressed/uncryptographed file for debugging. Only works on Editor.")]
-        public bool saveRawFile = true;
-
-
         /// <summary>
         /// Saves the given data using the name.
         /// </summary>
         /// <typeparam name="T">The generic type of the saved data.</typeparam>
         /// <param name="data">The data to save.</param>
-        /// <param name="name">The file name.</param>
-        /// <returns>A task operation of the saving process.</returns>
+        /// <param name="name">The data name to use.</param>
+        /// <param name="saveRawFile">
+        /// Whether to save an additional copy of data without any compression or cryptography, in human readable format. 
+        /// This is useful for debugging purposes.
+        /// </param>
+        /// <returns>An asynchronous operation of the saving process.</returns>
         public async Awaitable Save<T>(T data, string name, bool saveRawFile = true)
         {
 
@@ -49,32 +42,23 @@ namespace ActionCode.Persistence
             {
                 await GetFileSystem().Save(data, name, saveRawFile);
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 Debug.LogException(e);
             }
         }
 
         /// <summary>
-        /// Tries to load the data using the given slot index.
+        /// Tries to loads the data using the given name.
         /// </summary>
         /// <typeparam name="T">A generic data type to load.</typeparam>
         /// <param name="data">The data to load.</param>
-        /// <param name="slotIndex">The slot index to use.</param>
-        /// <param name="useRawFile">Whether to use the raw file to fast load the data without using compression or cryptography.</param>
-        /// <returns>A task operation of the loading process.</returns>
-        public async Task<bool> TryLoad<T>(T data, int slotIndex, bool useRawFile = false) =>
-            await TryLoad(data, GetSlotName(slotIndex), useRawFile);
-
-        /// <summary>
-        /// Tries to load the data using the given name.
-        /// </summary>
-        /// <typeparam name="T"><inheritdoc cref="TryLoad{T}(T, int, bool)"/></typeparam>
-        /// <param name="data"><inheritdoc cref="TryLoad{T}(T, int, bool)" path="/param[@name='data']"/></param>
-        /// <param name="name">The file name to load. Don't use any extension.</param>
-        /// <param name="useRawFile"><inheritdoc cref="TryLoad{T}(T, int, bool)" path="/param[@name='useRawFile']"/></param>
-        /// <returns><inheritdoc cref="TryLoad{T}(T, int, bool)"/></returns>
-        public async Task<bool> TryLoad<T>(T data, string name, bool useRawFile = false)
+        /// <param name="name"><inheritdoc cref="Save{T}(T, string, bool)" path="/param[@name='name']"/></param>
+        /// <param name="useRawFile">
+        /// Whether to use the raw file to fast load the data without using any compression or cryptography.
+        /// </param>
+        /// <returns>An asynchronous operation of the loading process.</returns>
+        public async Awaitable<bool> TryLoad<T>(T data, string name, bool useRawFile = false)
         {
             var useCompressedFile = !useRawFile;
 
@@ -82,7 +66,7 @@ namespace ActionCode.Persistence
             {
                 return await GetFileSystem().TryLoad(name, data, useCompressedFile);
             }
-            catch (Exception e)
+            catch (System.Exception e)
             {
                 Debug.LogException(e);
             }
@@ -91,55 +75,26 @@ namespace ActionCode.Persistence
         }
 
         /// <summary>
-        /// Tries to load the data from the last saved slot.
+        /// Deletes the data using the given name.
         /// </summary>
-        /// <typeparam name="T"><inheritdoc cref="TryLoad{T}(T, int, bool)"/></typeparam>
-        /// <param name="target"><inheritdoc cref="TryLoad{T}(T, int, bool)" path="/param[@name='data']"/></param>
-        /// <param name="useRawFile"><inheritdoc cref="TryLoad{T}(T, int, bool)" path="/param[@name='useRawFile']"/></param>
-        /// <returns><inheritdoc cref="TryLoad{T}(T, int, bool)"/></returns>
-        public async Task<bool> TryLoadLastSlot<T>(T target, bool useRawFile = false)
-        {
-            const int invalidSlot = -1;
-
-            var lastSlot = GetLastSlot(invalidSlot);
-            var hasLastSlot = lastSlot != invalidSlot;
-
-            return hasLastSlot && await TryLoad(target, lastSlot, useRawFile);
-        }
+        /// <param name="name"><inheritdoc cref="Save{T}(T, string, bool)" path="/param[@name='name']"/></param>
+        public void Delete(string name) => GetFileSystem().Delete(name);
 
         /// <summary>
-        /// Tries to delete the file using the given index.
+        /// Deletes all the saved files inside the persistent folder.
         /// </summary>
-        /// <param name="slotIndex">The file slot index to delete.</param>
-        /// <returns>Whether the file was deleted.</returns>
-        public bool TryDelete(int slotIndex) => TryDelete(GetSlotName(slotIndex));
+        public void DeleteAll() => GetFileSystem().DeleteAll();
 
         /// <summary>
-        /// Tries to delete the file using the given name.
+        /// <inheritdoc cref="FileSystem.GetFileNames()"/>
         /// </summary>
-        /// <param name="name">The file name to delete.</param>
-        /// <returns><inheritdoc cref="TryDelete(int)"/></returns>
-        public bool TryDelete(string name) => GetFileSystem().TryDelete(name);
+        /// <returns><inheritdoc cref="FileSystem.GetFileNames()"/></returns>
+        public System.Collections.Generic.IEnumerable<string> GetNames() => GetFileSystem().GetFileNames();
 
         /// <summary>
-        /// Tries to delete only the saved files inside the persistent folder.
+        /// Builds the <see cref="FileSystem"/> using the current settings.
         /// </summary>
-        /// <returns>Whether the saved files were deleted.</returns>
-        public bool TryDeleteAll() => GetFileSystem().TryDeleteAll();
-
-        /// <summary>
-        /// Returns all file names (without extension) saved on the persistent folder.
-        /// </summary>
-        /// <returns>An enumerable list containing all file names.</returns>
-        public IEnumerable<string> GetNames() => GetFileSystem().GetFileNames();
-
-        /// <summary>
-        /// Returns the last slot used or the given default value.
-        /// </summary>
-        /// <param name="defaultValue">The default value if the last slot is not found.</param>
-        /// <returns>Always an integer.</returns>
-        public int GetLastSlot(int defaultValue = 0) => PlayerPrefs.GetInt(lastSlotKey, defaultValue);
-
+        /// <returns></returns>
         public FileSystem GetFileSystem() => new(
             serializer,
             compressor,
@@ -147,6 +102,9 @@ namespace ActionCode.Persistence
             cryptographerKey
         );
 
-        public string GetSlotName(int index) => $"{slotName}-{index:D2}";
+        public void Delete(int slot)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

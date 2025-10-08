@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Update Unity minimum version to 6000.1
 
 ### Removed
+- Slots functions (move to Game Data System package)
 - PersistenceSettings Events (move to Game Data System package)
 - UI scripts (move to Game Data System package)
 - Package dependency ActionCode AsyncIO
