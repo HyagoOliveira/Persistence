@@ -55,37 +55,6 @@ namespace ActionCode.Persistence
             }
         }
 
-
-        /// <summary>
-        /// Action fired when the save process starts.
-        /// </summary>
-        public event Action OnSaveStart;
-
-        /// <summary>
-        /// Action fired when the save process finishes.
-        /// </summary>
-        public event Action OnSaveEnd;
-
-        /// <summary>
-        /// Action fired when the load process starts.
-        /// </summary>
-        public event Action OnLoadStart;
-
-        /// <summary>
-        /// Action fired when the load process finishes.
-        /// </summary>
-        public event Action OnLoadEnd;
-
-        /// <summary>
-        /// Action fired when the save process finishes with an error.
-        /// </summary>
-        public event Action<Exception> OnSaveError;
-
-        /// <summary>
-        /// Action fired when the load process finishes with an error.
-        /// </summary>
-        public event Action<Exception> OnLoadError;
-
         /// <summary>
         /// Tries to load the data using the given slot index.
         /// </summary>
@@ -107,7 +76,6 @@ namespace ActionCode.Persistence
         /// <returns><inheritdoc cref="TryLoad{T}(T, int, bool)"/></returns>
         public async Task<bool> TryLoad<T>(T data, string name, bool useRawFile = false)
         {
-            OnLoadStart?.Invoke();
             var useCompressedFile = !useRawFile;
 
             try
@@ -117,11 +85,6 @@ namespace ActionCode.Persistence
             catch (Exception e)
             {
                 Debug.LogException(e);
-                OnLoadError?.Invoke(e);
-            }
-            finally
-            {
-                OnLoadEnd?.Invoke();
             }
 
             return default;
