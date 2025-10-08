@@ -74,8 +74,8 @@ namespace ActionCode.Persistence
 
             var content = serializer.Serialize(data);
 
-            if (cryptographer != null) content = await cryptographer.Encrypt(content);
-            if (compressor != null) content = await compressor.Compress(content);
+            if (cryptographer != null) content = await cryptographer.EncryptAsync(content); 
+            if (compressor != null) content = await compressor.Compress(content); 
 
             await WriteAsync(path, content);
 
@@ -163,7 +163,7 @@ namespace ActionCode.Persistence
             if (useCompressedFile)
             {
                 content = await compressor.Decompress(content);
-                content = await cryptographer.Decrypt(content);
+                content = await cryptographer.DecryptAsync(content);
             }
 
             return content;

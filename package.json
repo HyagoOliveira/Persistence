@@ -9,7 +9,7 @@
     "Data"
   ],
   "dependencies": {
-    "com.actioncode.cryptography": "1.0.0",
+    "com.actioncode.cryptography": "2.0.0",
     "com.actioncode.scriptable-settings-provider": "1.0.0"
   },
   "license": "MIT",
