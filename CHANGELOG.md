@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Update Unity minimum version to 6000.1
 
+### Removed
+- Package dependency ActionCode AsyncIO
+
 ## [3.1.2] - 2025-08-16
 ### Fixed
 - Check DataPath before open it, creating it if necessary

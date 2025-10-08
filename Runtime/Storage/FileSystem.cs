@@ -2,12 +2,10 @@
 #define RUNTIME_WEBGL
 #endif
 
-using UnityEngine;
-using System.IO;
-using System.Threading.Tasks;
-using ActionCode.AsyncIO;
-using ActionCode.Cryptography;
 using System.Collections.Generic;
+using System.IO;
+using ActionCode.Cryptography;
+using UnityEngine;
 
 namespace ActionCode.Persistence
 {
@@ -23,7 +21,6 @@ namespace ActionCode.Persistence
 
         public static string DataPath => Path.Combine(Application.persistentDataPath, FOLDER);
 
-        private readonly IStream stream;
         private readonly ISerializer serializer;
         private readonly ICompressor compressor;
         private readonly ICryptographer cryptographer;
@@ -35,7 +32,6 @@ namespace ActionCode.Persistence
             string cryptographerKey
         ) :
             this(
-                StreamFactory.Create(),
                 SerializerFactory.Create(serializerType),
                 CompressorFactory.Create(compressorType),
                 CryptographerFactory.Create(cryptographerType, cryptographerKey)
@@ -43,13 +39,11 @@ namespace ActionCode.Persistence
         { }
 
         public FileSystem(
-            IStream stream,
             ISerializer serializer,
             ICompressor compressor,
             ICryptographer cryptographer
         )
         {
-            this.stream = stream;
             this.serializer = serializer;
             this.compressor = compressor;
             this.cryptographer = cryptographer;
@@ -62,8 +56,8 @@ namespace ActionCode.Persistence
         /// <param name="data">The data instance.</param>
         /// <param name="name">The data file name without extension.</param>
         /// <param name="saveRawData">Whether to save an additional copy of data without any compression or cryptography.</param>
-        /// <returns>A task operation of the saving process.</returns>
-        public async Task Save<T>(T data, string name, bool saveRawData)
+        /// <returns>An asynchronous operation of the saving process.</returns>
+        public async Awaitable Save<T>(T data, string name, bool saveRawData)
         {
             var invalidName = string.IsNullOrEmpty(name);
             if (invalidName) throw new System.Exception($"Invalid file name: '{name}'");
@@ -75,7 +69,7 @@ namespace ActionCode.Persistence
                 var prettyContent = serializer.SerializePretty(data);
                 var rawPath = Path.ChangeExtension(path, serializer.Extension);
 
-                await stream.Write(rawPath, prettyContent);
+                await WriteAsync(rawPath, prettyContent);
             }
 
             var content = serializer.Serialize(data);
@@ -83,7 +77,8 @@ namespace ActionCode.Persistence
             if (cryptographer != null) content = await cryptographer.Encrypt(content);
             if (compressor != null) content = await compressor.Compress(content);
 
-            await stream.Write(path, content);
+            await WriteAsync(path, content);
+
             TryFlushChanges();
         }
 
@@ -94,8 +89,8 @@ namespace ActionCode.Persistence
         /// <param name="name">The data file name without extension.</param>
         /// <param name="target">The target data to load.</param>
         /// <param name="useCompressedFile">Whether to use the compressed/encrypted file.</param>
-        /// <returns>A task operation of the loading process.</returns>
-        public async Task<bool> TryLoad<T>(string name, T target, bool useCompressedFile)
+        /// <returns>A asynchronous operation of the loading process.</returns>
+        public async Awaitable<bool> TryLoad<T>(string name, T target, bool useCompressedFile)
         {
             var content = await LoadContent(name, useCompressedFile);
             var hasContent = !string.IsNullOrEmpty(content);
@@ -164,7 +159,7 @@ namespace ActionCode.Persistence
             return true;
         }
 
-        private async Task<string> LoadContent(string name, bool useCompressedFile)
+        private async Awaitable<string> LoadContent(string name, bool useCompressedFile)
         {
             var extension = useCompressedFile ? COMPRESSED_EXTENSION : serializer.Extension;
             var path = GetPath(name, extension);
@@ -172,7 +167,7 @@ namespace ActionCode.Persistence
 
             if (hasNoFile) return string.Empty;
 
-            var content = await stream.Read(path);
+            var content = await ReadAsync(path);
 
             if (useCompressedFile)
             {
@@ -190,6 +185,27 @@ namespace ActionCode.Persistence
 #if UNITY_EDITOR
             UnityEditor.EditorUtility.RevealInFinder(DataPath + "/");
 #endif
+        }
+
+        public static async Awaitable WriteAsync(string path, string content)
+        {
+            await using var writer = new StreamWriter(path);
+            await writer.WriteAsync(content);
+        }
+
+        public static async Awaitable WriteAsync(Stream stream, byte[] bytes) =>
+            await stream.WriteAsync(bytes, 0, bytes.Length);
+
+        public static async Awaitable<string> ReadAsync(string path)
+        {
+            using var reader = new StreamReader(path);
+            return await reader.ReadToEndAsync();
+        }
+
+        public static async Awaitable<string> ReadAsync(Stream stream)
+        {
+            using var reader = new StreamReader(stream);
+            return await reader.ReadToEndAsync();
         }
 
         private static void CheckDataPath()

@@ -31,6 +31,31 @@ namespace ActionCode.Persistence
         [Tooltip("Whether to save the uncompressed/uncryptographed file for debugging. Only works on Editor.")]
         public bool saveRawFile = true;
 
+
+        /// <summary>
+        /// Saves the given data using the name.
+        /// </summary>
+        /// <typeparam name="T">The generic type of the saved data.</typeparam>
+        /// <param name="data">The data to save.</param>
+        /// <param name="name">The file name.</param>
+        /// <returns>A task operation of the saving process.</returns>
+        public async Awaitable Save<T>(T data, string name, bool saveRawFile = true)
+        {
+
+#if !UNITY_EDITOR
+            saveRawFile = false;
+#endif
+            try
+            {
+                await GetFileSystem().Save(data, name, saveRawFile);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+        }
+
+
         /// <summary>
         /// Action fired when the save process starts.
         /// </summary>
@@ -60,50 +85,6 @@ namespace ActionCode.Persistence
         /// Action fired when the load process finishes with an error.
         /// </summary>
         public event Action<Exception> OnLoadError;
-
-        /// <summary>
-        /// Saves the given data using the name.
-        /// </summary>
-        /// <typeparam name="T">The generic type of the saved data.</typeparam>
-        /// <param name="data">The data to save.</param>
-        /// <param name="name">The file name.</param>
-        /// <returns>A task operation of the saving process.</returns>
-        public async Task<bool> Save<T>(T data, string name)
-        {
-            OnSaveStart?.Invoke();
-
-#if !UNITY_EDITOR
-                saveRawFile = false;
-#endif
-            try
-            {
-                await GetFileSystem().Save(data, name, saveRawFile);
-                return true;
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-                OnSaveError?.Invoke(e);
-                return false;
-            }
-            finally
-            {
-                OnSaveEnd?.Invoke();
-            }
-        }
-
-        /// <summary>
-        /// Saves the given data using the slot index.
-        /// </summary>
-        /// <typeparam name="T">A generic data type to save.</typeparam>
-        /// <param name="data">The data to save.</param>
-        /// <param name="slotIndex">The slot index to use.</param>
-        /// <returns>A task operation of the saving process.</returns>
-        public async Task<bool> Save<T>(T data, int slotIndex)
-        {
-            PlayerPrefs.SetInt(lastSlotKey, slotIndex);
-            return await Save(data, GetSlotName(slotIndex));
-        }
 
         /// <summary>
         /// Tries to load the data using the given slot index.
