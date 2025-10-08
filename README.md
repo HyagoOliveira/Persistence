@@ -25,7 +25,7 @@ Click on the **Create** button and save a new Persistence Settings asset.
 
 ![The Persistence Settings Menu](/Docs~/PersistenceSettingsMenu.png "The Persistence Settings Menu")
 
-Now you can select a Serializer, Compression, Cryptographer and other settings to use when saving your data. Each property has a Tooltip description.
+Now you can select a Serializer, Compressor and a Cryptographer to use when saving/loading your data. Each property has its Tooltip description.
 
 If you're using a Cryptographer method, set a new Cryptographer Key using the **Get New Cryptographer Key** button. 
 
@@ -54,7 +54,7 @@ public sealed class PlayerData
 
 >**Note 2**: *Json Utility* serializer doesn't save *properties*, just *public fields* and *fields* with the `[SerializeField]` attribute. 
 Also, some types are not supported as well.
-To solve this, please use *Json Newtonsoft* serializer and install the [Newtonsoft Json package](https://github.com/applejag/Newtonsoft.Json-for-Unity/wiki/Install-official-via-UPM).
+To solve this, use *Json Newtonsoft* serializer and install the [Newtonsoft Json package](https://github.com/applejag/Newtonsoft.Json-for-Unity/wiki/Install-official-via-UPM) or create your own `Serializable` classes.
 
 >**Note 3**: If you're using *Json Newtonsoft* serializer, you may use the [Newtonsoft.Json-for-Unity.Converters package](https://github.com/applejag/Newtonsoft.Json-for-Unity/wiki/Install-Converters-via-UPM) if you need to serialize types such as Vector2, Vector3, Matrix4x4, Quaternions, Color and any other Unity type.
 
@@ -70,6 +70,8 @@ public sealed class PlayerDataTester : MonoBehaviour
 {
     public PersistenceSettings settings;
 
+    private const string SAVE_DATA_NAME = "SaveSlot-00";
+
     [ContextMenu("Save")]
     public async void Save()
     {
@@ -79,9 +81,8 @@ public sealed class PlayerDataTester : MonoBehaviour
             lastLevel = 1,
             playerName = "MegaMan"
         };
-        var wasSaved = await settings.Save(data, slot: 0);
+        await settings.SaveAsync(data, SAVE_DATA_NAME);
 
-        print("Was data saved? " + wasSaved);
         print(data);
     }
 
@@ -89,7 +90,7 @@ public sealed class PlayerDataTester : MonoBehaviour
     public async void Load()
     {
         var data = new PlayerData();
-        var wasLoaded = await settings.TryLoad(data, slot: 0);
+        var wasLoaded = await settings.TryLoadAsync(data, SAVE_DATA_NAME);
 
         print("Was data loaded? " + hasData);
         print(data);
@@ -101,26 +102,33 @@ public sealed class PlayerDataTester : MonoBehaviour
 
 ### Checking the Persisted Data
 
-Go to the Persistence Menu into the Project Settings or select the Persistence Settings asset.
+If you want to debug your persisted data in a human readable format, make sure to always use `saveRawFile = true` when saving it:
 
-If you want to debug your persisted data, make sure to enable the **Save Raw File**. 
-This way a legible file with the serializer extension will be saved next the encrypted/compressed one.
+```csharp
+var wasLoaded = await settings.TryLoadAsync(data, SAVE_DATA_NAME, useRawFile: true);
+```
+
+This way a legible file with the serializer extension (`.json` in this case) will be saved next the encrypted/compressed one.
 
 ![The SaveSlotFiles](/Docs~/SaveSlotFiles.png "The Save Slot Files")
 
->**This raw file is only saved on Editor**. Your build will always save to and load from the encrypted/compressed data.
+By default, `saveRawFile` is `true`.
 
-To check the files, click on the **Open Save Folder** button.
+>**The raw file is only saved by the Editor**. Your build will never save a raw file like this unless you set the **Compressor** and **Cryptographer** to **None**. `PersistenceSettings` will always save to and load from the encrypted/compressed data unless you explicitly change it.
 
-![The SaveRawFile](/Docs~/SaveRawFile-OpenSaveFolder.png "The Save Raw File option")
-
-When in the develop process, you can enable the optional boolean parameter *useRawFile* from any `PersistenceSettings.TryLoad<T>()` function to quickly load your data from the raw file.
+But when in are in the development process, it is better to edit the raw file and load the game from it. You can do it by using `useRawFile = true` when loading:
 
 ```csharp
 var wasLoaded = await settings.TryLoad(data, slot: 0, useRawFile: true);
 ```
 
-This function is faster since it will not uncompress and decrypt the raw file and you can edit this text file manually.
+This approach is faster since it will not uncompress and decrypt the raw file.
+
+By default, `useRawFile` is `false`.
+
+To check where the saved files are, click on the **Open Save Folder** button.
+
+![The SaveRawFile](/Docs~/SaveRawFile-OpenSaveFolder.png "The Save Raw File option")
 
 ### Delete and List Data
 

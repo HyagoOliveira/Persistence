@@ -1,6 +1,5 @@
 using UnityEngine;
 using ActionCode.Cryptography;
-using System;
 
 namespace ActionCode.Persistence
 {
@@ -32,7 +31,7 @@ namespace ActionCode.Persistence
         /// This is useful for debugging purposes.
         /// </param>
         /// <returns>An asynchronous operation of the saving process.</returns>
-        public async Awaitable Save<T>(T data, string name, bool saveRawFile = true)
+        public async Awaitable SaveAsync<T>(T data, string name, bool saveRawFile = true)
         {
 
 #if !UNITY_EDITOR
@@ -53,12 +52,12 @@ namespace ActionCode.Persistence
         /// </summary>
         /// <typeparam name="T">A generic data type to load.</typeparam>
         /// <param name="data">The data to load.</param>
-        /// <param name="name"><inheritdoc cref="Save{T}(T, string, bool)" path="/param[@name='name']"/></param>
+        /// <param name="name"><inheritdoc cref="SaveAsync{T}(T, string, bool)" path="/param[@name='name']"/></param>
         /// <param name="useRawFile">
         /// Whether to use the raw file to fast load the data without using any compression or cryptography.
         /// </param>
         /// <returns>An asynchronous operation of the loading process.</returns>
-        public async Awaitable<bool> TryLoad<T>(T data, string name, bool useRawFile = false)
+        public async Awaitable<bool> TryLoadAsync<T>(T data, string name, bool useRawFile = false)
         {
             var useCompressedFile = !useRawFile;
 
@@ -77,7 +76,7 @@ namespace ActionCode.Persistence
         /// <summary>
         /// Deletes the data using the given name.
         /// </summary>
-        /// <param name="name"><inheritdoc cref="Save{T}(T, string, bool)" path="/param[@name='name']"/></param>
+        /// <param name="name"><inheritdoc cref="SaveAsync{T}(T, string, bool)" path="/param[@name='name']"/></param>
         public void Delete(string name) => GetFileSystem().Delete(name);
 
         /// <summary>
@@ -101,10 +100,5 @@ namespace ActionCode.Persistence
             cryptographer,
             cryptographerKey
         );
-
-        public void Delete(int slot)
-        {
-            throw new NotImplementedException();
-        }
     }
 }
