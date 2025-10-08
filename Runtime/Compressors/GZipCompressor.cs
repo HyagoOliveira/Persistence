@@ -13,7 +13,7 @@ namespace ActionCode.Persistence
     /// </summary>
     public sealed class GZipCompressor : ICompressor
     {
-        public async Awaitable<string> Compress(string value)
+        public async Awaitable<string> CompressAsync(string value)
         {
             var bytes = Encoding.UTF8.GetBytes(value);
             using var memoryStream = new MemoryStream();
@@ -26,7 +26,7 @@ namespace ActionCode.Persistence
             return Convert.ToBase64String(output); ;
         }
 
-        public async Awaitable<string> Decompress(string value)
+        public async Awaitable<string> DecompressAsync(string value)
         {
             var bytes = Convert.FromBase64String(value);
             await using var memoryStream = new MemoryStream(bytes);

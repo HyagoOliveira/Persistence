@@ -9,13 +9,13 @@ namespace ActionCode.Persistence
         /// </summary>
         /// <param name="value">A string to compress.</param>
         /// <returns>An asynchronous operation of the compressing process.</returns>
-        Awaitable<string> Compress(string value);
+        Awaitable<string> CompressAsync(string value);
 
         /// <summary>
         /// Decompress the given value.
         /// </summary>
         /// <param name="value">A string to decompress.</param>
         /// <returns>An asynchronous operation of the decompressing process.</returns>
-        Awaitable<string> Decompress(string value);
+        Awaitable<string> DecompressAsync(string value);
     }
 }
