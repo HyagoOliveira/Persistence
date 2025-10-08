@@ -2,7 +2,7 @@
   "name": "com.actioncode.persistence",
   "displayName": "ActionCode-Persistence",
   "version": "3.1.2",
-  "unity": "2019.3",
+  "unity": "6000.1",
   "description": "This package can save Serialized data using encryption and compression.",
   "keywords": [
     "Save",

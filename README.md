@@ -1,7 +1,7 @@
 # Persistence
 
 * Save Serialized data using encryption and compression
-* Unity minimum version: **2019.3**
+* Unity minimum version: **6000.1**
 * Current version: **3.1.2**
 * License: **MIT**
 * Dependencies:

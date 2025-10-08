@@ -6,6 +6,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+- Update Unity minimum version to 6000.1
+
 ## [3.1.2] - 2025-08-16
 ### Fixed
 - Check DataPath before open it, creating it if necessary
