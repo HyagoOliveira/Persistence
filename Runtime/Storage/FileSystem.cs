@@ -67,6 +67,7 @@ namespace ActionCode.Persistence
             var invalidName = string.IsNullOrEmpty(name);
             if (invalidName) throw new System.Exception($"Invalid file name: '{name}'");
 
+            CheckDataPath();
             var path = GetPath(name, COMPRESSED_EXTENSION);
 
             if (saveRawData)

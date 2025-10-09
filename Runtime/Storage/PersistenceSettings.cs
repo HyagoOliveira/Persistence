@@ -33,10 +33,8 @@ namespace ActionCode.Persistence
         /// <returns>An asynchronous operation of the saving process.</returns>
         public async Awaitable SaveAsync<T>(T data, string name, bool saveRawFile = true)
         {
+            if (!Debug.isDebugBuild) saveRawFile = false;
 
-#if !UNITY_EDITOR
-            saveRawFile = false;
-#endif
             try
             {
                 await GetFileSystem().Save(data, name, saveRawFile);
@@ -59,7 +57,7 @@ namespace ActionCode.Persistence
         /// <returns>An asynchronous operation of the loading process.</returns>
         public async Awaitable<bool> TryLoadAsync<T>(T data, string name, bool useRawFile = false)
         {
-            var useCompressedFile = !useRawFile;
+            var useCompressedFile = !Debug.isDebugBuild || !useRawFile;
 
             try
             {
