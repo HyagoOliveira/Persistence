@@ -14,7 +14,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Slots functions (move to Game Data System package)
 - PersistenceSettings Events (move to Game Data System package)
 - UI scripts (move to Game Data System package)
-- Package dependency ActionCode AsyncIO
 
 ## [3.1.2] - 2025-08-16
 ### Fixed
