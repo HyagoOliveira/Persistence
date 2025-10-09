@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using System.IO.Compression;
+using ActionCode.AsyncIO;
 using UnityEngine;
 
 namespace ActionCode.Persistence
@@ -13,13 +14,17 @@ namespace ActionCode.Persistence
     /// </summary>
     public sealed class GZipCompressor : ICompressor
     {
+        private readonly IStream stream;
+
+        public GZipCompressor(IStream stream) => this.stream = stream;
+
         public async Awaitable<string> CompressAsync(string value)
         {
             var bytes = Encoding.UTF8.GetBytes(value);
             using var memoryStream = new MemoryStream();
             var compressor = new GZipStream(memoryStream, CompressionMode.Compress);
 
-            await FileSystem.WriteAsync(compressor, bytes);
+            await stream.WriteAsync(compressor, bytes);
 
             compressor.Dispose();
             var output = memoryStream.ToArray();
@@ -31,7 +36,7 @@ namespace ActionCode.Persistence
             var bytes = Convert.FromBase64String(value);
             await using var memoryStream = new MemoryStream(bytes);
             await using var decompressor = new GZipStream(memoryStream, CompressionMode.Decompress);
-            return await FileSystem.ReadAsync(decompressor);
+            return await stream.ReadAsync(decompressor);
         }
     }
 }

@@ -4,6 +4,7 @@
 
 using System.IO;
 using System.Collections.Generic;
+using ActionCode.AsyncIO;
 using ActionCode.Cryptography;
 using UnityEngine;
 
@@ -21,6 +22,7 @@ namespace ActionCode.Persistence
 
         public static string DataPath => Path.Combine(Application.persistentDataPath, FOLDER);
 
+        private readonly IStream stream;
         private readonly ISerializer serializer;
         private readonly ICompressor compressor;
         private readonly ICryptographer cryptographer;
@@ -32,6 +34,7 @@ namespace ActionCode.Persistence
             string cryptographerKey
         ) :
             this(
+                StreamFactory.Create(),
                 SerializerFactory.Create(serializerType),
                 CompressorFactory.Create(compressorType),
                 CryptographerFactory.Create(cryptographerType, cryptographerKey)
@@ -39,11 +42,13 @@ namespace ActionCode.Persistence
         { }
 
         public FileSystem(
+            IStream stream,
             ISerializer serializer,
             ICompressor compressor,
             ICryptographer cryptographer
         )
         {
+            this.stream = stream;
             this.serializer = serializer;
             this.compressor = compressor;
             this.cryptographer = cryptographer;
@@ -69,7 +74,7 @@ namespace ActionCode.Persistence
                 var prettyContent = serializer.SerializePretty(data);
                 var rawPath = Path.ChangeExtension(path, serializer.Extension);
 
-                await WriteAsync(rawPath, prettyContent);
+                await stream.WriteAsync(rawPath, prettyContent);
             }
 
             var content = serializer.Serialize(data);
@@ -77,7 +82,7 @@ namespace ActionCode.Persistence
             if (cryptographer != null) content = await cryptographer.EncryptAsync(content);
             if (compressor != null) content = await compressor.CompressAsync(content);
 
-            await WriteAsync(path, content);
+            await stream.WriteAsync(path, content);
 
             TryFlushChanges();
         }
@@ -158,7 +163,7 @@ namespace ActionCode.Persistence
 
             if (hasNoFile) return string.Empty;
 
-            var content = await ReadAsync(path);
+            var content = await stream.ReadAsync(path);
 
             Debug.Log("Content " + content);
 
@@ -193,27 +198,6 @@ namespace ActionCode.Persistence
             }
 
             System.Diagnostics.Process.Start(path);
-        }
-
-        public static async Awaitable WriteAsync(string path, string content)
-        {
-            await using var writer = new StreamWriter(path);
-            await writer.WriteAsync(content);
-        }
-
-        public static async Awaitable WriteAsync(Stream stream, byte[] bytes) =>
-            await stream.WriteAsync(bytes, 0, bytes.Length);
-
-        public static async Awaitable<string> ReadAsync(string path)
-        {
-            using var reader = new StreamReader(path);
-            return await reader.ReadToEndAsync();
-        }
-
-        public static async Awaitable<string> ReadAsync(Stream stream)
-        {
-            using var reader = new StreamReader(stream);
-            return await reader.ReadToEndAsync();
         }
 
         private static void CheckDataPath()
