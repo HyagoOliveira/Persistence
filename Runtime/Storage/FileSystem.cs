@@ -2,8 +2,8 @@
 #define RUNTIME_WEBGL
 #endif
 
-using System.Collections.Generic;
 using System.IO;
+using System.Collections.Generic;
 using ActionCode.Cryptography;
 using UnityEngine;
 
@@ -74,8 +74,8 @@ namespace ActionCode.Persistence
 
             var content = serializer.Serialize(data);
 
-            if (cryptographer != null) content = await cryptographer.EncryptAsync(content); 
-            if (compressor != null) content = await compressor.CompressAsync(content); 
+            if (cryptographer != null) content = await cryptographer.EncryptAsync(content);
+            if (compressor != null) content = await compressor.CompressAsync(content);
 
             await WriteAsync(path, content);
 
@@ -130,7 +130,7 @@ namespace ActionCode.Persistence
         /// Returns all file names (without extension) saved on the persistent folder.
         /// </summary>
         /// <returns>An enumerable list containing all file names.</returns>
-        public IEnumerable<string> GetFileNames()
+        public static IEnumerable<string> GetFileNames()
         {
             var hasInvalidPath = !Directory.Exists(DataPath);
             if (hasInvalidPath) yield break;
@@ -143,7 +143,7 @@ namespace ActionCode.Persistence
             }
         }
 
-        private void Delete(string name, string extension)
+        private static void Delete(string name, string extension)
         {
             var path = GetPath(name, extension);
             var isValidFilie = File.Exists(path);
@@ -160,9 +160,11 @@ namespace ActionCode.Persistence
 
             var content = await ReadAsync(path);
 
+            Debug.Log("Content " + content);
+
             if (useCompressedFile)
             {
-                content = await compressor.DecompressAsync(content); 
+                content = await compressor.DecompressAsync(content);
                 content = await cryptographer.DecryptAsync(content);
             }
 
@@ -176,6 +178,21 @@ namespace ActionCode.Persistence
 #if UNITY_EDITOR
             UnityEditor.EditorUtility.RevealInFinder(DataPath + "/");
 #endif
+        }
+
+        public static void Open(string name, string extension)
+        {
+            CheckDataPath();
+
+            var path = GetPath(name, extension);
+            var hasNoFile = !File.Exists(path);
+            if (hasNoFile)
+            {
+                Debug.LogError($"File '{path}' does not exist.");
+                return;
+            }
+
+            System.Diagnostics.Process.Start(path);
         }
 
         public static async Awaitable WriteAsync(string path, string content)
@@ -211,7 +228,7 @@ namespace ActionCode.Persistence
             return Path.ChangeExtension(path, extension);
         }
 
-        private void TryFlushChanges()
+        private static void TryFlushChanges()
         {
 #if RUNTIME_WEBGL
             // Flushes the changes into the Browser IndexedDB.

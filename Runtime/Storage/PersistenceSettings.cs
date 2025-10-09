@@ -88,7 +88,7 @@ namespace ActionCode.Persistence
         /// <inheritdoc cref="FileSystem.GetFileNames()"/>
         /// </summary>
         /// <returns><inheritdoc cref="FileSystem.GetFileNames()"/></returns>
-        public System.Collections.Generic.IEnumerable<string> GetNames() => GetFileSystem().GetFileNames();
+        public System.Collections.Generic.IEnumerable<string> GetNames() => FileSystem.GetFileNames();
 
         /// <summary>
         /// Builds the <see cref="FileSystem"/> using the current settings.
