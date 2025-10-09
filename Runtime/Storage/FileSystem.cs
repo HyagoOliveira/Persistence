@@ -165,8 +165,6 @@ namespace ActionCode.Persistence
 
             var content = await stream.ReadAsync(path);
 
-            Debug.Log("Content " + content);
-
             if (useCompressedFile)
             {
                 content = await compressor.DecompressAsync(content);
