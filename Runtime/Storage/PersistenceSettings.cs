@@ -72,6 +72,27 @@ namespace ActionCode.Persistence
         }
 
         /// <summary>
+        /// Tries to loads the data from the given path.
+        /// </summary>
+        /// <typeparam name="T">A generic data type to load.</typeparam>
+        /// <param name="data">The data to load.</param>
+        /// <param name="path">The path where the data is.</param>
+        /// <returns>An asynchronous operation of the loading process.</returns>
+        public async Awaitable<bool> TryLoadAsync<T>(T data, string path)
+        {
+            try
+            {
+                return await GetFileSystem().TryLoad(path, data);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogException(e);
+            }
+
+            return default;
+        }
+
+        /// <summary>
         /// Deletes the data using the given name.
         /// </summary>
         /// <param name="name"><inheritdoc cref="SaveAsync{T}(T, string, bool)" path="/param[@name='name']"/></param>

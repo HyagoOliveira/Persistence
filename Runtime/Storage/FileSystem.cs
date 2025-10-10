@@ -95,10 +95,27 @@ namespace ActionCode.Persistence
         /// <param name="name">The data file name without extension.</param>
         /// <param name="target">The target data to load.</param>
         /// <param name="useCompressedFile">Whether to use the compressed/encrypted file.</param>
-        /// <returns>A asynchronous operation of the loading process.</returns>
+        /// <returns>An asynchronous operation of the loading process.</returns>
         public async Awaitable<bool> TryLoad<T>(string name, T target, bool useCompressedFile)
         {
-            var content = await LoadContent(name, useCompressedFile);
+            var content = await LoadAsync(name, useCompressedFile);
+            var hasContent = !string.IsNullOrEmpty(content);
+
+            if (hasContent) serializer.Deserialize(content, ref target);
+
+            return hasContent;
+        }
+
+        /// <summary>
+        /// Tries to load the generic data from the given path.
+        /// </summary>
+        /// <typeparam name="T">The generic data type to load.</typeparam>
+        /// <param name="path">The path where the data is.</param>
+        /// <param name="target">The target data to load.</param>
+        /// <returns>An asynchronous operation of the loading process.</returns>
+        public async Awaitable<bool> TryLoad<T>(string path, T target)
+        {
+            var content = await LoadAsync(path);
             var hasContent = !string.IsNullOrEmpty(content);
 
             if (hasContent) serializer.Deserialize(content, ref target);
@@ -156,17 +173,23 @@ namespace ActionCode.Persistence
             if (isValidFilie) File.Delete(path);
         }
 
-        private async Awaitable<string> LoadContent(string name, bool useCompressedFile)
+        private async Awaitable<string> LoadAsync(string name, bool useCompressedFile)
         {
             var extension = useCompressedFile ? COMPRESSED_EXTENSION : serializer.Extension;
             var path = GetPath(name, extension);
-            var hasNoFile = !File.Exists(path);
+            return await LoadAsync(path);
+        }
 
+        private async Awaitable<string> LoadAsync(string path)
+        {
+            var hasNoFile = !File.Exists(path);
             if (hasNoFile) return string.Empty;
 
+            var extension = Path.GetExtension(path).Replace(".", "");
             var content = await stream.ReadAsync(path);
+            var isCompressed = extension == COMPRESSED_EXTENSION;
 
-            if (useCompressedFile)
+            if (isCompressed)
             {
                 content = await compressor.DecompressAsync(content);
                 content = await cryptographer.DecryptAsync(content);
