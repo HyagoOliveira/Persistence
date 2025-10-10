@@ -2,9 +2,10 @@
 
 * Save Serialized data using encryption and compression
 * Unity minimum version: **6000.1**
-* Current version: **3.1.2**
+* Current version: **4.0.0**
 * License: **MIT**
 * Dependencies:
+    - [com.actioncode.async-io : 2.0.0](https://github.com/HyagoOliveira/Async-IO/tree/2.0.0)
     - [com.actioncode.cryptography : 2.0.0](https://github.com/HyagoOliveira/Cryptography/tree/2.0.0)
     - [com.actioncode.scriptable-settings-provider : 1.0.0](https://github.com/HyagoOliveira/ScriptableSettingsProvider/tree/1.0.0)
 
@@ -132,7 +133,7 @@ To check where the saved files are, click on the **Open Save Folder** button.
 
 ### Delete and List Data
 
-You can also List all files or delete them using PersistenceSettings class.
+You can also List all files or delete them using `PersistenceSettings`.
 
 ## Installation
 

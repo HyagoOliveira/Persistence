@@ -6,6 +6,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.0.0] - 2025-10-09
 ### Changed
 - Update Async IO package to 2.0.0
 - Update Unity minimum version to 6000.1
@@ -110,7 +111,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - gitignore
 - Initial commit
 
-[Unreleased]: https://github.com/HyagoOliveira/Persistence/compare/3.1.2...main
+[Unreleased]: https://github.com/HyagoOliveira/Persistence/compare/4.0.0...main
+[4.0.0]: https://github.com/HyagoOliveira/Persistence/tree/3.1.2/
 [3.1.2]: https://github.com/HyagoOliveira/Persistence/tree/3.1.2/
 [3.1.1]: https://github.com/HyagoOliveira/Persistence/tree/3.1.1/
 [3.1.0]: https://github.com/HyagoOliveira/Persistence/tree/3.1.0/
