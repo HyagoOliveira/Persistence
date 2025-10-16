@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using ActionCode.Cryptography;
 
@@ -39,7 +40,7 @@ namespace ActionCode.Persistence
             {
                 await GetFileSystem().Save(data, name, saveRawFile);
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 Debug.LogException(e);
             }
@@ -63,7 +64,7 @@ namespace ActionCode.Persistence
             {
                 return await GetFileSystem().TryLoad(name, data, useCompressedFile);
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 Debug.LogException(e);
             }
@@ -84,7 +85,26 @@ namespace ActionCode.Persistence
             {
                 return await GetFileSystem().TryLoad(path, data);
             }
-            catch (System.Exception e)
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+
+            return default;
+        }
+
+        /// <summary>
+        /// Loads the compressed/cryptographed data bytes using the given name.
+        /// </summary>
+        /// <param name="name"><inheritdoc cref="SaveAsync{T}(T, string, bool)" path="/param[@name='name']"/></param>
+        /// <returns>An asynchronous operation of the loading process.</returns>
+        public async Awaitable<byte[]> LoadBytesAsync(string name)
+        {
+            try
+            {
+                return await GetFileSystem().LoadBytesAsync(name);
+            }
+            catch (Exception e)
             {
                 Debug.LogException(e);
             }
