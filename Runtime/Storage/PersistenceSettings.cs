@@ -39,7 +39,7 @@ namespace ActionCode.Persistence
 
             try
             {
-                await GetFileSystem().Save(data, name, saveRawFile);
+                await GetFileSystem().SaveAsync(data, name, saveRawFile);
             }
             catch (Exception e)
             {
@@ -63,7 +63,7 @@ namespace ActionCode.Persistence
 
             try
             {
-                return await GetFileSystem().TryLoad(name, data, useCompressedFile);
+                return await GetFileSystem().TryLoadAsync(name, data, useCompressedFile);
             }
             catch (Exception e)
             {
@@ -84,7 +84,7 @@ namespace ActionCode.Persistence
         {
             try
             {
-                return await GetFileSystem().TryLoad(path, data);
+                return await GetFileSystem().TryLoadAsync(path, data);
             }
             catch (Exception e)
             {

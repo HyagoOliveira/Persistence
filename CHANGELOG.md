@@ -8,6 +8,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - LoadBytesAsync functions
 
+###
+- Add Async sufix to FileSystem asyc functions
+
 ## [4.0.0] - 2025-10-09
 ### Changed
 - Update Async IO package to 2.0.0

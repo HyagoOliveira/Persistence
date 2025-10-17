@@ -15,11 +15,24 @@ namespace ActionCode.Persistence
     /// </summary>
     public sealed class FileSystem
     {
+        /// <summary>
+        /// The serializer used by the File System.
+        /// </summary>
         public ISerializer Serializer => serializer;
 
+        /// <summary>
+        /// The folder name used by the File System.
+        /// </summary>
         public const string FOLDER = "Persistence";
+
+        /// <summary>
+        /// The compressed file extension used by the File System.
+        /// </summary>
         public const string COMPRESSED_EXTENSION = "sv";
 
+        /// <summary>
+        /// The persistent data path used by the File System.
+        /// </summary>
         public static string DataPath => Path.Combine(Application.persistentDataPath, FOLDER);
 
         private readonly IStream stream;
@@ -27,6 +40,13 @@ namespace ActionCode.Persistence
         private readonly ICompressor compressor;
         private readonly ICryptographer cryptographer;
 
+        /// <summary>
+        /// Creates a new File System using the given params.
+        /// </summary>
+        /// <param name="serializerType">The serializer type.</param>
+        /// <param name="compressorType">The compressor type.</param>
+        /// <param name="cryptographerType">The cryptographer type.</param>
+        /// <param name="cryptographerKey">The key used by the cryptographer.</param>
         public FileSystem(
             SerializerType serializerType,
             CompressorType compressorType,
@@ -41,6 +61,13 @@ namespace ActionCode.Persistence
             )
         { }
 
+        /// <summary>
+        /// <inheritdoc cref="FileSystem"/>
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <param name="serializer"></param>
+        /// <param name="compressor"></param>
+        /// <param name="cryptographer"></param>
         public FileSystem(
             IStream stream,
             ISerializer serializer,
@@ -62,7 +89,7 @@ namespace ActionCode.Persistence
         /// <param name="name">The data file name without extension.</param>
         /// <param name="saveRawData">Whether to save an additional copy of data without any compression or cryptography.</param>
         /// <returns>An asynchronous operation of the saving process.</returns>
-        public async Awaitable Save<T>(T data, string name, bool saveRawData)
+        public async Awaitable SaveAsync<T>(T data, string name, bool saveRawData)
         {
             var invalidName = string.IsNullOrEmpty(name);
             if (invalidName) throw new System.Exception($"Invalid file name: '{name}'");
@@ -96,7 +123,7 @@ namespace ActionCode.Persistence
         /// <param name="target">The target data to load.</param>
         /// <param name="useCompressedFile">Whether to use the compressed/encrypted file.</param>
         /// <returns>An asynchronous operation of the loading process.</returns>
-        public async Awaitable<bool> TryLoad<T>(string name, T target, bool useCompressedFile)
+        public async Awaitable<bool> TryLoadAsync<T>(string name, T target, bool useCompressedFile)
         {
             var content = await LoadAsync(name, useCompressedFile);
             var hasContent = !string.IsNullOrEmpty(content);
@@ -113,7 +140,7 @@ namespace ActionCode.Persistence
         /// <param name="path">The path where the data is.</param>
         /// <param name="target">The target data to load.</param>
         /// <returns>An asynchronous operation of the loading process.</returns>
-        public async Awaitable<bool> TryLoad<T>(string path, T target)
+        public async Awaitable<bool> TryLoadAsync<T>(string path, T target)
         {
             var content = await LoadAsync(path);
             var hasContent = !string.IsNullOrEmpty(content);

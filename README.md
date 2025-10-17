@@ -84,7 +84,7 @@ public sealed class PlayerDataTester : MonoBehaviour
             lastLevel = 1,
             playerName = "MegaMan"
         };
-        await settings.SaveAsync(data, SAVE_DATA_NAME);
+        await settings.GetFileSystem().SaveAsync(data, SAVE_DATA_NAME);
 
         print(data);
     }
@@ -93,7 +93,7 @@ public sealed class PlayerDataTester : MonoBehaviour
     public async void Load()
     {
         var data = new PlayerData();
-        var wasLoaded = await settings.TryLoadAsync(data, SAVE_DATA_NAME);
+        var wasLoaded = await settings.GetFileSystem().TryLoadAsync(data, SAVE_DATA_NAME);
 
         print("Was data loaded? " + hasData);
         print(data);
@@ -105,29 +105,29 @@ public sealed class PlayerDataTester : MonoBehaviour
 
 ### Checking the Persisted Data
 
-If you want to debug your persisted data in a human readable format, make sure to always use `saveRawFile = true` when saving it:
+If you want to debug your persisted data in a human readable format, make sure to always use `savePrettyFile = true` when saving it:
 
 ```csharp
-var wasLoaded = await settings.TryLoadAsync(data, SAVE_DATA_NAME, useRawFile: true);
+var wasLoaded = await settings.GetFileSystem().TryLoadAsync(data, SAVE_DATA_NAME, savePrettyFile: true);
 ```
 
-This way a legible file with the serializer extension (`.json` in this case) will be saved next the encrypted/compressed one.
+This way a legible file with the serializer extension (`.json` in this case) will be saved next to the encrypted/compressed one.
 
 ![The SaveSlotFiles](/Docs~/SaveSlotFiles.png "The Save Slot Files")
 
-By default, `saveRawFile` is `true`.
+By default, `savePrettyFile` is `true`.
 
->**The raw file is only saved by the Editor**. Your build will never save a raw file like this unless you set the **Compressor** and **Cryptographer** to **None**. `PersistenceSettings` will always save to and load from the encrypted/compressed data unless you explicitly change it.
+>**The pretty file is only saved by the Editor**. Your build will never save a human readable file like this unless you set the **Compressor** and **Cryptographer** to **None**. `PersistenceSettings` will always save to and load from the encrypted/compressed data unless you explicitly change it.
 
-But when in are in the development process, it is better to edit the raw file and load the game from it. You can do it by using `useRawFile = true` when loading:
+But when in are in the development process, it is better to edit the pretty file and load the game from it. You can do it by using `usePrettyFile = true` when loading:
 
 ```csharp
-var wasLoaded = await settings.TryLoad(data, slot: 0, useRawFile: true);
+var wasLoaded = await settings.GetFileSystem().TryLoadAsync(data, slot: 0, usePrettyFile: true);
 ```
 
-This approach is faster since it will not uncompress and decrypt the raw file.
+This approach is faster since it will not uncompress and decrypt the file.
 
-By default, `useRawFile` is `false`.
+By default, `usePrettyFile` is `false`.
 
 To check where the saved files are, click on the **Open Save Folder** button.
 
