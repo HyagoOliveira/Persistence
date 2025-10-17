@@ -14,6 +14,8 @@
 This package can save Serialized data, first encrypting and/or compressing it. You can select if you want to only encrypt, compress or use both.
 Also, you can choose witch serialization method to use (Json, XML or Binary).
 
+Data serialization also works in WebGL builds by using the [Async-IO package](https://github.com/HyagoOliveira/Async-IO).
+
 To start to save/load data, you need first to create a **Persistence Settings** asset and use it on your Serialized data class.
 
 ## How To Use
