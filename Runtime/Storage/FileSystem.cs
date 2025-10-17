@@ -124,15 +124,15 @@ namespace ActionCode.Persistence
         }
 
         /// <summary>
-        /// Loads the compressed/cryptographed data bytes using the given name.
+        /// Loads the compressed/cryptographed data stream using the given name.
         /// </summary>
         /// <param name="name">The data file name without extension.</param>
         /// <returns>An asynchronous operation of the loading process.</returns>
-        public async Awaitable<byte[]> LoadBytesAsync(string name)
+        public Stream LoadStream(string name)
         {
             var path = GetPath(name, COMPRESSED_EXTENSION);
             var hasFile = File.Exists(path);
-            return hasFile ? await File.ReadAllBytesAsync(path) : null;
+            return hasFile ? new StreamReader(path).BaseStream : null;
         }
 
         /// <summary>

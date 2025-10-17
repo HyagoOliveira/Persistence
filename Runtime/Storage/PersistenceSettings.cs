@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using UnityEngine;
 using ActionCode.Cryptography;
 
@@ -98,18 +99,18 @@ namespace ActionCode.Persistence
         /// </summary>
         /// <param name="name"><inheritdoc cref="SaveAsync{T}(T, string, bool)" path="/param[@name='name']"/></param>
         /// <returns>An asynchronous operation of the loading process.</returns>
-        public async Awaitable<byte[]> LoadBytesAsync(string name)
+        public Stream LoadStream(string name)
         {
             try
             {
-                return await GetFileSystem().LoadBytesAsync(name);
+                return GetFileSystem().LoadStream(name);
             }
             catch (Exception e)
             {
                 Debug.LogException(e);
             }
 
-            return default;
+            return null;
         }
 
         /// <summary>
