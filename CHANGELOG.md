@@ -8,8 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - LoadBytesAsync functions
 
-###
+### Changed
 - Add Async sufix to FileSystem asyc functions
+
+### Removed
+- PersistenceSettings file functions. Use GetFileSystem() first
 
 ## [4.0.0] - 2025-10-09
 ### Changed
