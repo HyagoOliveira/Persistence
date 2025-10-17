@@ -41,12 +41,32 @@ namespace ActionCode.Persistence
         private readonly ICryptographer cryptographer;
 
         /// <summary>
-        /// Creates a new File System using the given params.
+        /// Creates a File System using the given params.
         /// </summary>
-        /// <param name="serializerType">The serializer type.</param>
-        /// <param name="compressorType">The compressor type.</param>
-        /// <param name="cryptographerType">The cryptographer type.</param>
-        /// <param name="cryptographerKey">The key used by the cryptographer.</param>
+        /// <param name="stream">The Stream implementation used.</param>
+        /// <param name="serializer">The Serializer implementation used.</param>
+        /// <param name="compressor">The Compressor implementation used.</param>
+        /// <param name="cryptographer">The Cryptographer implementation used.</param>
+        public FileSystem(
+            IStream stream,
+            ISerializer serializer,
+            ICompressor compressor,
+            ICryptographer cryptographer
+        )
+        {
+            this.stream = stream;
+            this.serializer = serializer;
+            this.compressor = compressor;
+            this.cryptographer = cryptographer;
+        }
+
+        /// <summary>
+        /// Creates a File System using the given params.
+        /// </summary>
+        /// <param name="serializerType">The serializer type to use.</param>
+        /// <param name="compressorType">The compressor type to use.</param>
+        /// <param name="cryptographerType">The cryptographer type to use.</param>
+        /// <param name="cryptographerKey">The key used by the cryptographer to use.</param>
         public FileSystem(
             SerializerType serializerType,
             CompressorType compressorType,
@@ -62,34 +82,16 @@ namespace ActionCode.Persistence
         { }
 
         /// <summary>
-        /// <inheritdoc cref="FileSystem"/>
-        /// </summary>
-        /// <param name="stream"></param>
-        /// <param name="serializer"></param>
-        /// <param name="compressor"></param>
-        /// <param name="cryptographer"></param>
-        public FileSystem(
-            IStream stream,
-            ISerializer serializer,
-            ICompressor compressor,
-            ICryptographer cryptographer
-        )
-        {
-            this.stream = stream;
-            this.serializer = serializer;
-            this.compressor = compressor;
-            this.cryptographer = cryptographer;
-        }
-
-        /// <summary>
         /// Saves the given data using the name. 
         /// </summary>
-        /// <typeparam name="T">The data generic type.</typeparam>
+        /// <typeparam name="T">The generic data type to save.</typeparam>
         /// <param name="data">The data instance.</param>
         /// <param name="name">The data file name without extension.</param>
-        /// <param name="saveRawData">Whether to save an additional copy of data without any compression or cryptography.</param>
-        /// <returns>An asynchronous operation of the saving process.</returns>
-        public async Awaitable SaveAsync<T>(T data, string name, bool saveRawData)
+        /// <param name="savePrettyData">
+        /// Whether to save an additional copy of data without any compression or cryptography.
+        /// </param>
+        /// <returns>An asynchronous save operation.</returns>
+        public async Awaitable SaveAsync<T>(T data, string name, bool savePrettyData)
         {
             var invalidName = string.IsNullOrEmpty(name);
             if (invalidName) throw new System.Exception($"Invalid file name: '{name}'");
@@ -97,7 +99,7 @@ namespace ActionCode.Persistence
             CheckDataPath();
             var path = GetPath(name, COMPRESSED_EXTENSION);
 
-            if (saveRawData)
+            if (savePrettyData)
             {
                 var prettyContent = serializer.SerializePretty(data);
                 var rawPath = Path.ChangeExtension(path, serializer.Extension);
@@ -112,20 +114,20 @@ namespace ActionCode.Persistence
 
             await stream.WriteAsync(path, content);
 
-            TryFlushChanges();
+            TryFlushBrowserDatabase();
         }
 
         /// <summary>
         /// Tries to load the generic data using the given name.
         /// </summary>
         /// <typeparam name="T">The generic data type to load.</typeparam>
-        /// <param name="name">The data file name without extension.</param>
+        /// <param name="name"><inheritdoc cref="SaveAsync{T}(T, string, bool)" path="/param[@name='name']"/></param>
         /// <param name="target">The target data to load.</param>
         /// <param name="useCompressedFile">Whether to use the compressed/encrypted file.</param>
-        /// <returns>An asynchronous operation of the loading process.</returns>
+        /// <returns>An asynchronous load operation.</returns>
         public async Awaitable<bool> TryLoadAsync<T>(string name, T target, bool useCompressedFile)
         {
-            var content = await LoadAsync(name, useCompressedFile);
+            var content = await LoadContentAsync(name, useCompressedFile);
             var hasContent = !string.IsNullOrEmpty(content);
 
             if (hasContent) serializer.Deserialize(content, ref target);
@@ -139,10 +141,10 @@ namespace ActionCode.Persistence
         /// <typeparam name="T">The generic data type to load.</typeparam>
         /// <param name="path">The path where the data is.</param>
         /// <param name="target">The target data to load.</param>
-        /// <returns>An asynchronous operation of the loading process.</returns>
+        /// <returns><inheritdoc cref="TryLoadAsync{T}(string, T, bool)"/></returns>
         public async Awaitable<bool> TryLoadAsync<T>(string path, T target)
         {
-            var content = await LoadAsync(path);
+            var content = await LoadContentAsync(path);
             var hasContent = !string.IsNullOrEmpty(content);
 
             if (hasContent) serializer.Deserialize(content, ref target);
@@ -151,10 +153,46 @@ namespace ActionCode.Persistence
         }
 
         /// <summary>
+        /// Loads the data content using the given name.
+        /// </summary>
+        /// <param name="name"><inheritdoc cref="SaveAsync{T}(T, string, bool)" path="/param[@name='name']"/></param>
+        /// <param name="useCompressedFile"><inheritdoc cref="TryLoadAsync{T}(string, T, bool)" path="/param[@name='useCompressedFile']"/></param>
+        /// <returns><inheritdoc cref="TryLoadAsync{T}(string, T, bool)"/></returns>
+        public async Awaitable<string> LoadContentAsync(string name, bool useCompressedFile)
+        {
+            var extension = useCompressedFile ? COMPRESSED_EXTENSION : serializer.Extension;
+            var path = GetPath(name, extension);
+            return await LoadContentAsync(path);
+        }
+
+        /// <summary>
+        /// Loads the data content using the given path.
+        /// </summary>
+        /// <param name="path"><inheritdoc cref="TryLoadAsync{T}(string, T)" path="/param[@name='path']"/></param>
+        /// <returns><inheritdoc cref="TryLoadAsync{T}(string, T, bool)"/></returns>
+        public async Awaitable<string> LoadContentAsync(string path)
+        {
+            var hasNoFile = !File.Exists(path);
+            if (hasNoFile) return string.Empty;
+
+            var extension = Path.GetExtension(path).Replace(".", "");
+            var content = await stream.ReadAsync(path);
+            var isCompressed = extension == COMPRESSED_EXTENSION;
+
+            if (isCompressed)
+            {
+                content = await compressor.DecompressAsync(content);
+                content = await cryptographer.DecryptAsync(content);
+            }
+
+            return content;
+        }
+
+        /// <summary>
         /// Loads the compressed/cryptographed data stream using the given name.
         /// </summary>
-        /// <param name="name">The data file name without extension.</param>
-        /// <returns>An asynchronous operation of the loading process.</returns>
+        /// <param name="name"><inheritdoc cref="SaveAsync{T}(T, string, bool)" path="/param[@name='name']"/></param>
+        /// <returns><inheritdoc cref="TryLoadAsync{T}(string, T, bool)"/></returns>
         public Stream LoadStream(string name)
         {
             var path = GetPath(name, COMPRESSED_EXTENSION);
@@ -171,10 +209,9 @@ namespace ActionCode.Persistence
         /// <param name="name">The data file name without extension.</param>
         public void Delete(string name)
         {
-            Delete(name, serializer.Extension); // Raw file does not exists in build
+            Delete(name, serializer.Extension); // Pretty file does not exists in build
             Delete(name, COMPRESSED_EXTENSION);
-
-            TryFlushChanges();
+            TryFlushBrowserDatabase();
         }
 
         /// <summary>
@@ -205,38 +242,21 @@ namespace ActionCode.Persistence
             }
         }
 
-        private static void Delete(string name, string extension)
+        /// <summary>
+        /// Deletes the given file using the name and extension.
+        /// </summary>
+        /// <param name="name"><inheritdoc cref="SaveAsync{T}(T, string, bool)" path="/param[@name='name']"/></param>
+        /// <param name="extension">The file extension.</param>
+        public static void Delete(string name, string extension)
         {
             var path = GetPath(name, extension);
             var isValidFilie = File.Exists(path);
             if (isValidFilie) File.Delete(path);
         }
 
-        private async Awaitable<string> LoadAsync(string name, bool useCompressedFile)
-        {
-            var extension = useCompressedFile ? COMPRESSED_EXTENSION : serializer.Extension;
-            var path = GetPath(name, extension);
-            return await LoadAsync(path);
-        }
-
-        private async Awaitable<string> LoadAsync(string path)
-        {
-            var hasNoFile = !File.Exists(path);
-            if (hasNoFile) return string.Empty;
-
-            var extension = Path.GetExtension(path).Replace(".", "");
-            var content = await stream.ReadAsync(path);
-            var isCompressed = extension == COMPRESSED_EXTENSION;
-
-            if (isCompressed)
-            {
-                content = await compressor.DecompressAsync(content);
-                content = await cryptographer.DecryptAsync(content);
-            }
-
-            return content;
-        }
-
+        /// <summary>
+        /// Opens the persistent data folder in the file explorer.
+        /// </summary>
         public static void OpenSaveFolder()
         {
             CheckDataPath();
@@ -246,6 +266,11 @@ namespace ActionCode.Persistence
 #endif
         }
 
+        /// <summary>
+        /// Opens the file using the given name and extension.
+        /// </summary>
+        /// <param name="name"><inheritdoc cref="SaveAsync{T}(T, string, bool)" path="/param[@name='name']"/></param>
+        /// <param name="extension"><inheritdoc cref="Delete(string, string)" path="/param[@name='extension']"/></param>
         public static void Open(string name, string extension)
         {
             CheckDataPath();
@@ -261,19 +286,32 @@ namespace ActionCode.Persistence
             System.Diagnostics.Process.Start(path);
         }
 
-        private static void CheckDataPath()
+        /// <summary>
+        /// Checks if the data path exists. If not, creates it.
+        /// </summary>
+        public static void CheckDataPath()
         {
             var hasInvalidDataPath = !Directory.Exists(DataPath);
             if (hasInvalidDataPath) Directory.CreateDirectory(DataPath);
         }
 
-        private static string GetPath(string name, string extension)
+        /// <summary>
+        /// Gets the full path using the given name and extension.
+        /// </summary>
+        /// <param name="name"><inheritdoc cref="SaveAsync{T}(T, string, bool)" path="/param[@name='name']"/></param>
+        /// <param name="extension"><inheritdoc cref="Delete(string, string)" path="/param[@name='extension']"/></param>
+        /// <returns>The path using the extension.</returns>
+        public static string GetPath(string name, string extension)
         {
             var path = Path.Combine(DataPath, name.Trim());
             return Path.ChangeExtension(path, extension);
         }
 
-        private static void TryFlushChanges()
+        /// <summary>
+        /// Tries to persist the Browser database changes into the disk. 
+        /// Only works for WebGL builds.
+        /// </summary>
+        public static void TryFlushBrowserDatabase()
         {
 #if RUNTIME_WEBGL
             // Flushes the changes into the Browser IndexedDB.
