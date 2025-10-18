@@ -11,18 +11,18 @@
 
 ## Summary
 
-This package can save Serialized data, first encrypting and/or compressing it. You can select if you want to only encrypt, compress or use both.
+This package can save Serialized data, after encrypting and/or compressing it. You can select if you want to only encrypt, compress or use both.
 Also, you can choose which serialization method to use (Json, XML or Binary).
 
 Data serialization also works in WebGL builds by using the [Async-IO](https://github.com/HyagoOliveira/Async-IO) package.
 
-To start to save/load data, you need first to create a **Persistence Settings** asset and use it on your Serialized data class.
+To start to save/load data, you need first to create a **Persistence Settings** asset.
 
 ## How To Use
 
 ### Creating the Persistence Settings
 
-Open the **Project Settings** Windows and select Persistence (below ActionCode group).
+Open the **Project Settings** Windows and select **Persistence** (below ActionCode group).
 
 Click on the **Create** button and save a new Persistence Settings asset.
 
@@ -32,7 +32,9 @@ Now you can select a Serializer, Compressor and a Cryptographer to use when savi
 
 If you're using a Cryptographer method, set a new Cryptographer Key using the **Get New Cryptographer Key** button. 
 
->You should always use a **different Cryptographer Key** for every game you work in order to increase your data security.   
+>You should always use a **different Cryptographer Key** for every game you work in order to increase your data security.
+
+Now, you should created a Serialized data class to persist its data using the Persistence Settings.
 
 ### Creating the Serialized Data Class
 
@@ -59,10 +61,12 @@ public sealed class PlayerData
 >**Note 1**: if you're planning to use **XML Serialization** you should create a constructor to each serialized class.
 
 >**Note 2**: *Json Utility* Serializer doesn't save *properties*, just *public fields* and *fields* with the `[SerializeField]` attribute. 
-Also, some types are not supported as well. In most cases, this will not be a problem since Save Data should be as simple as possible. 
+Also, some types are not supported as well. In most cases, this will not be a problem since serialized data classes should be as simple as possible. 
 But if you need a custom serialization, create your own `Serializable` class like [SerializedTransform](https://github.com/HyagoOliveira/GameDataSystem/blob/main/Runtime/SerializedData/SerializedTransform.cs).
 
 >**Note 3**: If you're using *Json Newtonsoft* serializer, you may use the [Newtonsoft.Json-for-Unity.Converters package](https://github.com/applejag/Newtonsoft.Json-for-Unity/wiki/Install-Converters-via-UPM) if you need to serialize types such as Vector2, Vector3, Matrix4x4, Quaternions, Color and any other Unity type.
+
+Now that you have the serialized PlayerData class, let's persist it using the Persistence Settings.
 
 ### Persisting the Serialized Data Class
 
@@ -123,7 +127,7 @@ public class PlayerDataTester : MonoBehaviour
     {
         settings.GetFileSystem().Delete(SAVE_DATA_NAME);
         print("Save data deleted.");
-        // Delete() does not throws any exception.
+        // Delete() does not throws any exception, even though 'SaveSlot-00' file does not exists.
     }
 
     [ContextMenu("List")]
@@ -152,9 +156,7 @@ This way a legible file with the Serializer extension (`.json` in this case) wil
 
 By default, `savePrettyData` is `true`.
 
->**The pretty file is only saved by the Editor**. Your build will never save a human readable file like this unless you set the **Compressor** and **Cryptographer** to **None**. `PersistenceSettings` will always save to and load from the encrypted/compressed data unless you explicitly change it.
-
-But when in are in the development process, it is better to edit the pretty file and load the game from it. You can do it by using `useCompressedData = false` when loading:
+In the development process, it is better to edit the pretty file and load the game from it. You can do it by using `useCompressedData = false` when loading:
 
 ```csharp
 var wasLoaded = await settings.GetFileSystem().TryLoadAsync(data, SAVE_DATA_NAME, useCompressedData: false);
@@ -163,6 +165,10 @@ var wasLoaded = await settings.GetFileSystem().TryLoadAsync(data, SAVE_DATA_NAME
 This approach is faster since it will not uncompress and decrypt the file.
 
 By default, `useCompressedData` is `true`.
+
+>**The pretty file is only saved by the Editor**. Your build will never save a human readable file like this unless you set the **Compressor** and **Cryptographer** to **None**. `PersistenceSettings` will always save to and load from the encrypted/compressed data unless you explicitly change it.
+
+### Where are the Persisted Data?
 
 To check where the saved files are, click on the **Open Save Folder** button.
 
