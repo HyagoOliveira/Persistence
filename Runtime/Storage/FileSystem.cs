@@ -160,22 +160,17 @@ namespace ActionCode.Persistence
         }
 
         /// <summary>
-        /// Tries to deserialize the given content into the target data.
+        /// Deserializes the given content into the target data.
         /// </summary>
         /// <typeparam name="T">The generic data type to deserialize.</typeparam>
         /// <param name="target">The target data to deserialize.</param>
         /// <param name="content">The content data to deserialize.</param>
         /// <param name="isCompressed">Whether the content is compressed.</param>
-        /// <returns>An asynchronous deserializing operation</returns>
-        public async Awaitable<bool> TryDeserializeAsync<T>(T target, string content, bool isCompressed = true)
+        /// <returns>An asynchronous deserializing operation.</returns>
+        public async Awaitable DeserializeAsync<T>(T target, string content, bool isCompressed = true)
         {
-            var hasInvalidContent = string.IsNullOrEmpty(content);
-            if (hasInvalidContent) return false;
-
             if (isCompressed) content = await DecompressAsync(content);
-
             serializer.Deserialize(content, ref target);
-            return true;
         }
 
         /// <summary>
