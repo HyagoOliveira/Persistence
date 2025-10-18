@@ -308,6 +308,13 @@ namespace ActionCode.Persistence
         }
 
         /// <summary>
+        /// Gets the given file name using the compressed extension.
+        /// </summary>
+        /// <param name="name"><inheritdoc cref="SaveAsync{T}(T, string, bool)" path="/param[@name='name']"/></param>
+        /// <returns>The given file name using the compressed extension.</returns>
+        public static string GetCompressedName(string name) => Path.ChangeExtension(name, COMPRESSED_EXTENSION);
+
+        /// <summary>
         /// Tries to persist the Browser database changes into the disk. 
         /// Only works for WebGL builds.
         /// </summary>
