@@ -192,6 +192,18 @@ namespace ActionCode.Persistence
         }
 
         /// <summary>
+        /// Loads the compressed data content using the given name.
+        /// </summary>
+        /// <param name="name"><inheritdoc cref="SaveAsync{T}(T, string, bool)" path="/param[@name='name']"/></param>
+        /// <returns><inheritdoc cref="TryLoadAsync{T}(T, string, bool)"/></returns>
+        public async Awaitable<string> LoadCompressedContentAsync(string name)
+        {
+            var path = GetPath(name, COMPRESSED_EXTENSION);
+            var content = await stream.ReadAsync(path);
+            return content;
+        }
+
+        /// <summary>
         /// Loads the data content using the given path.
         /// </summary>
         /// <param name="path"><inheritdoc cref="TryLoadFromPathAsync{T}(string, T)" path="/param[@name='path']"/></param>

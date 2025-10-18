@@ -6,10 +6,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
+- FileSystem LoadCompressedContentAsync
 - FileSystem TryDeserializeAsync
 - FileSystem DecompressAsync function
 - FileSystem CompressAsync function
-- FileSystem LoadBytesAsync functions
 - FileSystem GetCompressedName function
 
 ### Changed
