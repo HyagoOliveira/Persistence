@@ -91,10 +91,11 @@ namespace ActionCode.Persistence
         /// Whether to save an additional copy of data without any compression or cryptography.
         /// </param>
         /// <returns>An asynchronous save operation.</returns>
-        public async Awaitable SaveAsync<T>(T data, string name, bool savePrettyData)
+        /// <exception cref="FileNotFoundException"></exception>
+        public async Awaitable SaveAsync<T>(T data, string name, bool savePrettyData = true)
         {
             var invalidName = string.IsNullOrEmpty(name);
-            if (invalidName) throw new System.Exception($"Invalid file name: '{name}'");
+            if (invalidName) throw new FileNotFoundException($"Invalid file name: '{name}'");
 
             CheckDataPath();
             var path = GetPath(name, COMPRESSED_EXTENSION);
@@ -123,11 +124,11 @@ namespace ActionCode.Persistence
         /// <typeparam name="T">The generic data type to load.</typeparam>
         /// <param name="name"><inheritdoc cref="SaveAsync{T}(T, string, bool)" path="/param[@name='name']"/></param>
         /// <param name="target">The target data to load.</param>
-        /// <param name="useCompressedFile">Whether to use the compressed/encrypted file.</param>
+        /// <param name="useCompressedData">Whether to use the compressed/encrypted file.</param>
         /// <returns>An asynchronous load operation.</returns>
-        public async Awaitable<bool> TryLoadAsync<T>(string name, T target, bool useCompressedFile)
+        public async Awaitable<bool> TryLoadAsync<T>(T target, string name, bool useCompressedData = true)
         {
-            var content = await LoadContentAsync(name, useCompressedFile);
+            var content = await LoadContentAsync(name, useCompressedData);
             var hasContent = !string.IsNullOrEmpty(content);
 
             if (hasContent) serializer.Deserialize(content, ref target);
@@ -141,8 +142,8 @@ namespace ActionCode.Persistence
         /// <typeparam name="T">The generic data type to load.</typeparam>
         /// <param name="path">The path where the data is.</param>
         /// <param name="target">The target data to load.</param>
-        /// <returns><inheritdoc cref="TryLoadAsync{T}(string, T, bool)"/></returns>
-        public async Awaitable<bool> TryLoadAsync<T>(string path, T target)
+        /// <returns><inheritdoc cref="TryLoadAsync{T}(T, string, bool)"/></returns>
+        public async Awaitable<bool> TryLoadFromPathAsync<T>(T target, string path)
         {
             var content = await LoadContentAsync(path);
             var hasContent = !string.IsNullOrEmpty(content);
@@ -156,11 +157,11 @@ namespace ActionCode.Persistence
         /// Loads the data content using the given name.
         /// </summary>
         /// <param name="name"><inheritdoc cref="SaveAsync{T}(T, string, bool)" path="/param[@name='name']"/></param>
-        /// <param name="useCompressedFile"><inheritdoc cref="TryLoadAsync{T}(string, T, bool)" path="/param[@name='useCompressedFile']"/></param>
-        /// <returns><inheritdoc cref="TryLoadAsync{T}(string, T, bool)"/></returns>
-        public async Awaitable<string> LoadContentAsync(string name, bool useCompressedFile)
+        /// <param name="useCompressedData"><inheritdoc cref="TryLoadAsync{T}(T, string, bool)" path="/param[@name='useCompressedData']"/></param>
+        /// <returns><inheritdoc cref="TryLoadAsync{T}(T, string, bool)"/></returns>
+        public async Awaitable<string> LoadContentAsync(string name, bool useCompressedData)
         {
-            var extension = useCompressedFile ? COMPRESSED_EXTENSION : serializer.Extension;
+            var extension = useCompressedData ? COMPRESSED_EXTENSION : serializer.Extension;
             var path = GetPath(name, extension);
             return await LoadContentAsync(path);
         }
@@ -168,8 +169,8 @@ namespace ActionCode.Persistence
         /// <summary>
         /// Loads the data content using the given path.
         /// </summary>
-        /// <param name="path"><inheritdoc cref="TryLoadAsync{T}(string, T)" path="/param[@name='path']"/></param>
-        /// <returns><inheritdoc cref="TryLoadAsync{T}(string, T, bool)"/></returns>
+        /// <param name="path"><inheritdoc cref="TryLoadFromPathAsync{T}(string, T)" path="/param[@name='path']"/></param>
+        /// <returns><inheritdoc cref="TryLoadAsync{T}(T, string, bool)"/></returns>
         public async Awaitable<string> LoadContentAsync(string path)
         {
             var hasNoFile = !File.Exists(path);
@@ -192,7 +193,7 @@ namespace ActionCode.Persistence
         /// Loads the compressed/cryptographed data stream using the given name.
         /// </summary>
         /// <param name="name"><inheritdoc cref="SaveAsync{T}(T, string, bool)" path="/param[@name='name']"/></param>
-        /// <returns><inheritdoc cref="TryLoadAsync{T}(string, T, bool)"/></returns>
+        /// <returns><inheritdoc cref="TryLoadAsync{T}(T, string, bool)"/></returns>
         public Stream LoadStream(string name)
         {
             var path = GetPath(name, COMPRESSED_EXTENSION);
