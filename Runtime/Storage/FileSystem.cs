@@ -282,17 +282,14 @@ namespace ActionCode.Persistence
         /// </summary>
         /// <param name="name"><inheritdoc cref="SaveAsync{T}(T, string, bool)" path="/param[@name='name']"/></param>
         /// <param name="extension"><inheritdoc cref="Delete(string, string)" path="/param[@name='extension']"/></param>
+        /// <exception cref="FileNotFoundException"></exception>
         public static void Open(string name, string extension)
         {
             CheckDataPath();
 
             var path = GetPath(name, extension);
             var hasNoFile = !File.Exists(path);
-            if (hasNoFile)
-            {
-                Debug.LogError($"File '{path}' does not exist.");
-                return;
-            }
+            if (hasNoFile) throw new FileNotFoundException($"File '{path}' does not exist.", name);
 
             System.Diagnostics.Process.Start(path);
         }
