@@ -2,8 +2,8 @@
 #define RUNTIME_WEBGL
 #endif
 
-using System.Collections.Generic;
 using System.IO;
+using System.Collections.Generic;
 using ActionCode.AsyncIO;
 using ActionCode.Cryptography;
 using UnityEngine;
@@ -96,7 +96,7 @@ namespace ActionCode.Persistence
         /// <param name="savePrettyData">
         /// Whether to save an additional copy of data without any compression or cryptography.
         /// </param>
-        /// <returns>An asynchronous save operation.</returns>
+        /// <returns>An asynchronous saving operation.</returns>
         /// <exception cref="FileNotFoundException"></exception>
         public async Awaitable SaveAsync<T>(T data, string name, bool savePrettyData = true)
         {
@@ -106,16 +106,16 @@ namespace ActionCode.Persistence
             if (invalidName) throw new FileNotFoundException($"Invalid file name: '{name}'");
 
             CheckDataPath();
-            var path = GetPath(name, COMPRESSED_EXTENSION);
 
             if (savePrettyData)
             {
                 var prettyContent = serializer.SerializePretty(data);
-                var rawPath = Path.ChangeExtension(path, serializer.Extension);
+                var prettyPath = GetPath(name, serializer.Extension);
 
-                await stream.WriteAsync(rawPath, prettyContent);
+                await stream.WriteAsync(prettyPath, prettyContent);
             }
 
+            var path = GetPath(name, COMPRESSED_EXTENSION);
             var content = await CompressAsync(data);
             await stream.WriteAsync(path, content);
 
@@ -129,7 +129,7 @@ namespace ActionCode.Persistence
         /// <param name="name"><inheritdoc cref="SaveAsync{T}(T, string, bool)" path="/param[@name='name']"/></param>
         /// <param name="target">The target data to load.</param>
         /// <param name="useCompressedData">Whether to use the compressed/encrypted file.</param>
-        /// <returns>An asynchronous load operation.</returns>
+        /// <returns>An asynchronous loading operation.</returns>
         public async Awaitable<bool> TryLoadAsync<T>(T target, string name, bool useCompressedData = true)
         {
             if (!IsAbleToUsePrettyData()) useCompressedData = true;
@@ -157,6 +157,25 @@ namespace ActionCode.Persistence
             if (hasContent) serializer.Deserialize(content, ref target);
 
             return hasContent;
+        }
+
+        /// <summary>
+        /// Tries to deserialize the given content into the target data.
+        /// </summary>
+        /// <typeparam name="T">The generic data type to deserialize.</typeparam>
+        /// <param name="target">The target data to deserialize.</param>
+        /// <param name="content">The content data to deserialize.</param>
+        /// <param name="isCompressed">Whether the content is compressed.</param>
+        /// <returns>An asynchronous deserializing operation</returns>
+        public async Awaitable<bool> TryDeserializeAsync<T>(T target, string content, bool isCompressed = true)
+        {
+            var hasInvalidContent = string.IsNullOrEmpty(content);
+            if (hasInvalidContent) return false;
+
+            if (isCompressed) content = await DecompressAsync(content);
+
+            serializer.Deserialize(content, ref target);
+            return true;
         }
 
         /// <summary>
