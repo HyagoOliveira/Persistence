@@ -166,7 +166,7 @@ This approach is faster since it will not uncompress and decrypt the file.
 
 By default, `useCompressedData` is `true`.
 
->**The pretty file is only saved by the Editor**. Your build will never save a human readable file like this unless you set the **Compressor** and **Cryptographer** to **None**. `PersistenceSettings` will always save to and load from the encrypted/compressed data unless you explicitly change it.
+>**The pretty file is only saved by the Editor**. Your builds will never save a human readable file unless you set the **Compressor** and **Cryptographer** to **None**. `PersistenceSettings` will always save to and load from the encrypted/compressed data unless you explicitly change it.
 
 ### Where are the Persisted Data?
 
