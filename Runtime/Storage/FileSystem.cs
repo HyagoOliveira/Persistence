@@ -82,6 +82,12 @@ namespace ActionCode.Persistence
         { }
 
         /// <summary>
+        /// Pretty data is human legible text file (like a pretty .json file).
+        /// </summary>
+        /// <returns>Whether should use a Pretty data.</returns>
+        public static bool IsAbleToUsePrettyData() => Debug.isDebugBuild;
+
+        /// <summary>
         /// Saves the given data using the name. 
         /// </summary>
         /// <typeparam name="T">The generic data type to save.</typeparam>
@@ -94,6 +100,8 @@ namespace ActionCode.Persistence
         /// <exception cref="FileNotFoundException"></exception>
         public async Awaitable SaveAsync<T>(T data, string name, bool savePrettyData = true)
         {
+            if (!IsAbleToUsePrettyData()) savePrettyData = false;
+
             var invalidName = string.IsNullOrEmpty(name);
             if (invalidName) throw new FileNotFoundException($"Invalid file name: '{name}'");
 
@@ -128,6 +136,8 @@ namespace ActionCode.Persistence
         /// <returns>An asynchronous load operation.</returns>
         public async Awaitable<bool> TryLoadAsync<T>(T target, string name, bool useCompressedData = true)
         {
+            if (!IsAbleToUsePrettyData()) useCompressedData = true;
+
             var content = await LoadContentAsync(name, useCompressedData);
             var hasContent = !string.IsNullOrEmpty(content);
 
