@@ -2,8 +2,8 @@
 #define RUNTIME_WEBGL
 #endif
 
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using ActionCode.AsyncIO;
 using ActionCode.Cryptography;
 using UnityEngine;
@@ -116,11 +116,7 @@ namespace ActionCode.Persistence
                 await stream.WriteAsync(rawPath, prettyContent);
             }
 
-            var content = serializer.Serialize(data);
-
-            if (cryptographer != null) content = await cryptographer.EncryptAsync(content);
-            if (compressor != null) content = await compressor.CompressAsync(content);
-
+            var content = await CompressAsync(data);
             await stream.WriteAsync(path, content);
 
             TryFlushBrowserDatabase();
@@ -190,11 +186,7 @@ namespace ActionCode.Persistence
             var content = await stream.ReadAsync(path);
             var isCompressed = extension == COMPRESSED_EXTENSION;
 
-            if (isCompressed)
-            {
-                content = await compressor.DecompressAsync(content);
-                content = await cryptographer.DecryptAsync(content);
-            }
+            if (isCompressed) content = await DecompressAsync(content);
 
             return content;
         }
@@ -263,6 +255,32 @@ namespace ActionCode.Persistence
             var path = GetPath(name, extension);
             var isValidFilie = File.Exists(path);
             if (isValidFilie) File.Delete(path);
+        }
+
+        /// <summary>
+        /// Compresses and encrypts the given data.
+        /// </summary>
+        /// <typeparam name="T">The generic data type to compress.</typeparam>
+        /// <param name="data">The data instance to compress.</param>
+        /// <returns>An asynchronous compressing operation.</returns>
+        public async Awaitable<string> CompressAsync<T>(T data)
+        {
+            var content = serializer.Serialize(data);
+            if (cryptographer != null) content = await cryptographer.EncryptAsync(content);
+            if (compressor != null) content = await compressor.CompressAsync(content);
+            return content;
+        }
+
+        /// <summary>
+        /// Decompresses and decrypts the given content.
+        /// </summary>
+        /// <param name="content">The content to decompress.</param>
+        /// <returns>An asynchronous decompressing operation.</returns>
+        public async Awaitable<string> DecompressAsync(string content)
+        {
+            if (compressor != null) content = await compressor.DecompressAsync(content);
+            if (cryptographer != null) content = await cryptographer.DecryptAsync(content);
+            return content;
         }
 
         /// <summary>
