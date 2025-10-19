@@ -5,6 +5,8 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+
+## [5.0.0] - 2025-10-19
 ### Added
 - FileSystem LoadCompressedContentAsync
 - FileSystem DeserializeAsync
@@ -123,8 +125,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - gitignore
 - Initial commit
 
-[Unreleased]: https://github.com/HyagoOliveira/Persistence/compare/4.0.0...main
-[4.0.0]: https://github.com/HyagoOliveira/Persistence/tree/3.1.2/
+[Unreleased]: https://github.com/HyagoOliveira/Persistence/compare/5.0.0...main
+[5.0.0]: https://github.com/HyagoOliveira/Persistence/tree/5.0.0/
+[4.0.0]: https://github.com/HyagoOliveira/Persistence/tree/4.0.0/
 [3.1.2]: https://github.com/HyagoOliveira/Persistence/tree/3.1.2/
 [3.1.1]: https://github.com/HyagoOliveira/Persistence/tree/3.1.1/
 [3.1.0]: https://github.com/HyagoOliveira/Persistence/tree/3.1.0/

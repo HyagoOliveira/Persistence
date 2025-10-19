@@ -2,7 +2,7 @@
 
 * Save Serialized data using encryption and compression
 * Unity minimum version: **6000.1**
-* Current version: **4.0.0**
+* Current version: **5.0.0**
 * License: **MIT**
 * Dependencies:
     - [com.actioncode.async-io : 2.0.0](https://github.com/HyagoOliveira/Async-IO/tree/2.0.0)
@@ -16,7 +16,7 @@ Also, you can choose which serialization method to use (Json, XML or Binary).
 
 Data serialization also works in WebGL builds by using the [Async-IO](https://github.com/HyagoOliveira/Async-IO) package.
 
-To start to save/load data, you need first to create a **Persistence Settings** asset.
+To start to saving/loading data, you need first to create a **Persistence Settings** asset.
 
 ## How To Use
 
@@ -70,7 +70,7 @@ Now that you have the serialized PlayerData class, let's persist it using the Pe
 
 ### Persisting the Serialized Data Class
 
-You can Save, Load, Delete and List your **PlayerData** like so:
+You can Save, Load, Delete and List your **PlayerData**:
 
 ```csharp
 using System;
